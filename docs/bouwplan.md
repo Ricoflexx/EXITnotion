@@ -1,6 +1,6 @@
 # EXITnotion: bouwplan (stap 4, kritische blik)
 
-Status: voorstel, wacht op besluiten B1 tot en met B6 (onderaan).
+Status: **vastgesteld op 26-11-2026**. Zie de besluiten onderaan.
 Bron: onderzoek en beoordeling in `docs/beoordeling-eisen.html` (stap 1 tot en met 3).
 
 ## 1. Kritische conclusies
@@ -63,24 +63,20 @@ versie 1 eerst **twee weken naast Notion**, met Liv's werkplek als testcase, voo
 
 | Gebied | Eisen in versie 1 |
 |---|---|
-| Toegang | R01 inloggen met EXIT-account, R02 privé-omgeving, R03 beheerders zien alles (+ R93 inzagelog), R04 delen (lezen, reageren, bewerken), R05 teamruimte |
+| Toegang | R01 inloggen met EXIT-account, R02 privé-omgeving, R03 beheerders zien alles (+ R93 inzagelog), R04 delen (lezen, reageren, bewerken), R05 teamruimte, R81 overdragen bij vertrek |
 | Werkplek | R10 stagiair-werkplek, R11 kolommen, R12 database op een pagina, R13 uitklapblokken, R72 sjablonen |
 | Schrijven | R20 basisblokken, R21 /-menu, R22 sneltoetsen, R23 slepen, R24 tabellen, R25 uploads, R28 @-verwijzingen, R29 automatisch opslaan |
 | Plannen | R30 takendatabase, R31 eigen statussen, R32 kalender, R33 bord, R34 filteren en groeperen, R35 Mijn taken, R36 dagelijkse To Do |
-| Notuleren | R40 notulensjabloon, R42 logboek per dag |
+| Notuleren en ideeën | R40 notulensjabloon, R42 logboek per dag, R52 pagina's verplaatsen tussen ruimtes |
 | Vinden en beheer | R70 zoeken, R71 favorieten en recent, R63 prullenbak, R80 beheerdersoverzicht, R82 back-ups, R85 Nederlands, R86 snel |
 | Overstap | R84 import uit Notion |
 
 **Versie 1.1** (na de testperiode): R61 live samen bewerken, R60 opmerkingen, R64 meldingen, R62 versiegeschiedenis,
-R41 actiepunten worden taken, R43 notulenoverzicht, R50 ideeënbord, R52 verplaatsen tussen ruimtes, R73 archief,
-R81 overdragen, R90 Box, R27 en R26 embeds en linkkaartjes, R91 snelle invoer, R92 prioriteit, herhalen en herinneringen,
+R41 actiepunten worden taken, R43 notulenoverzicht, R50 ideeënbord, R73 archief, R90 Box, R27 en R26 embeds en linkkaartjes, R91 snelle invoer, R92 prioriteit, herhalen en herinneringen,
 R89 huisstijl afmaken.
 
 **Versie 2:** R83 export, R14 iconen en omslagfoto, R37 tijdlijn en grafieken, R51 moodboard, R53 canvas,
-R88 offline (als B2 dat zo houdt), R38 formules (Kan).
-
-> Let op: R52 (verplaatsen) en R81 (overdragen) staan in 1.1. Als jullie de overstap van de Social Media Hub
-> meteen willen maken, schuiven ze naar versie 1 (besluit B1).
+R38 formules (Kan). R88 offline staat op Niet nu (B2).
 
 ## 3. Techniek (route A)
 
@@ -91,7 +87,7 @@ R88 offline (als B2 dat zo houdt), R38 formules (Kan).
 | Samen bewerken | Yjs + Hocuspocus (een kleine Node-server) | Standaardcombinatie met BlockNote. Rechten controleren we bij het verbinden. |
 | Tabel, bord, kalender | TanStack Table, dnd-kit, FullCalendar (MIT-deel) | Bewezen bibliotheken, we bouwen alleen de koppeling zelf |
 | Datums in snelle invoer | chrono-node (kan Nederlands) | Voor "morgen 10:00" (R91) |
-| Database | Azure Database for PostgreSQL (Flexible Server), Prisma | Back-ups tot 35 dagen terug te zetten (R82). Zoeken met de Nederlandse full-text search van Postgres (R70). |
+| Database | Azure Database for PostgreSQL (Flexible Server), Drizzle ORM | Back-ups tot 35 dagen terug te zetten (R82). Zoeken met de Nederlandse full-text search van Postgres (R70). |
 | Bestanden | Azure Blob Storage | Uploads (R25) |
 | Inloggen | Microsoft Entra ID (single-tenant) via Auth.js | Alleen EXIT-accounts. De beheerdersrol komt uit een Entra-groep "EXITnotion-Beheerders". |
 | Hosting | Azure App Service (Linux), regio West Europe | Ondersteunt websockets, eenvoudig te beheren |
@@ -124,12 +120,20 @@ geen toezegging.
 | **Versie 1** | | **11–15** |
 | Versie 1.1 | Samenwerken, notulen en ideeën, Box, TickTick-functies | 5–7 |
 
-## 5. Besluiten die nodig zijn
+## 5. Besluiten (26-11-2026)
 
-- **B1. Versie-1-scope.** Akkoord met hoofdstuk 2? Moeten R52 en R81 erbij?
-- **B2. Offline (R88)** van Zou moeten naar Niet nu?
-- **B3. Afspraak over tools.** Akkoord met de verdeling in 1.3?
-- **B4. Eigenaar en bouwer.** Wie bouwt, en wie onderhoudt het na de stage?
-- **B5. Privacy.** Akkoord met R93 (inzagelog) en de melding bij de eerste keer inloggen?
-- **B6. Azure.** Wie regelt de subscription of resourcegroep, de app-registratie in Entra ID en het domein
-  (bijvoorbeeld `werkplek.dutchtoysgroup.com`)? Zonder die toegang bouwen we eerst lokaal.
+- **B1. Versie 1:** akkoord met hoofdstuk 2. **R52 (pagina's verplaatsen tussen ruimtes) en R81 (overdragen bij vertrek)
+  gaan mee in versie 1**, zodat de Social Media Hub meteen kan overstappen.
+- **B2. Offline (R88):** naar **Niet nu**.
+- **B3. Tools:** akkoord met de verdeling in 1.3.
+- **B4. Eigenaar en bouwer:** Ricardo.
+- **B5. Privacy:** akkoord met R93 (inzagelog) en de melding bij de eerste keer inloggen.
+- **B6. Azure:** Sven richt Azure in (resourcegroep, app-registratie in Entra ID, domein) en neemt de uitrol over via
+  GitHub. De stappen staan in `docs/azure-setup.md`.
+
+### Uitwerking van de besluiten
+- **Beheerders en inzage:** een beheerder kan elke pagina **lezen** (R03), ook privé-pagina's van anderen. Elke inzage
+  die alleen via de beheerdersrol mogelijk is, wordt gelogd (R93). Bewerken kan een beheerder alleen met normale rechten,
+  of via de beheerfuncties zoals overdragen (R81).
+- **ORM:** Drizzle in plaats van Prisma (op 26-11-2026 stond Prisma's "latest" op een release candidate). Drizzle heeft geen
+  aparte engine nodig en de migraties zijn gewone SQL-bestanden.

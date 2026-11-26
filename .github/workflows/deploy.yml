@@ -1,0 +1,46 @@
+name: Uitrollen
+
+# Rolt de app uit naar Azure App Service bij elke push naar main, of met de hand.
+# Vereist de GitHub-omgeving "productie" met de secrets en variables uit docs/azure-setup.md.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write # voor inloggen bij Azure zonder wachtwoord (OIDC)
+
+concurrency:
+  group: deploy-productie
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Bouwen en uitrollen
+    runs-on: ubuntu-latest
+    environment:
+      name: productie
+      url: ${{ vars.APP_URL }}
+    env:
+      DATABASE_URL: postgres://build:build@localhost:5432/build
+      AUTH_SECRET: build-only-not-secret
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: bash scripts/package.sh
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ vars.AZURE_WEBAPP_NAME }}
+          package: deploy/app.zip
