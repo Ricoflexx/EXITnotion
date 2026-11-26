@@ -10,6 +10,8 @@ import { signIn, signOut } from "@/auth";
 import { requireUser } from "@/lib/session";
 import * as access from "@/lib/access";
 import * as admin from "@/lib/admin";
+import * as docs from "@/lib/docs";
+import { mentionTargets } from "@/lib/search";
 
 const id = z.uuid();
 const grantLevel = z.enum(["read", "comment", "edit", "full"]);
@@ -53,6 +55,30 @@ export async function saveTitle(pageId: string, title: string) {
   const user = await requireUser();
   await access.renamePage(user, id.parse(pageId), z.string().max(300).parse(title));
   revalidatePath("/", "layout");
+}
+
+// --- Editor (Yjs) ---------------------------------------------------------------------------
+
+const b64 = z.string().max(14_000_000).regex(/^[A-Za-z0-9+/=]*$/);
+
+export async function pushDocUpdate(pageId: string, update: string) {
+  const user = await requireUser();
+  await docs.applyDocUpdate(user, id.parse(pageId), b64.parse(update));
+}
+
+export async function pullDocUpdates(pageId: string, stateVector: string | null, editing: boolean) {
+  const user = await requireUser();
+  return docs.pullDoc(user, id.parse(pageId), stateVector === null ? null : b64.parse(stateVector), Boolean(editing));
+}
+
+export async function welcomeDone(pageId: string) {
+  const user = await requireUser();
+  await docs.clearWelcomeFlag(user, id.parse(pageId));
+}
+
+export async function findMentionTargets(query: string) {
+  const user = await requireUser();
+  return mentionTargets(user, z.string().max(100).parse(query));
 }
 
 export async function trash(form: FormData) {

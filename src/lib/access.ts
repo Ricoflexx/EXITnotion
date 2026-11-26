@@ -1,5 +1,5 @@
 import "server-only";
-import { and, asc, desc, eq, inArray, isNull, isNotNull, sql } from "drizzle-orm";
+import { and, asc, desc, eq, getTableColumns, inArray, isNull, isNotNull, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { auditLog, favorites, pageGrants, pages, spaceMembers, spaces, users, type Page, type Space, type User } from "@/db/schema";
 import { can, canMove, resolveAccess, type GrantLevel, type Level } from "./permissions";
@@ -9,6 +9,10 @@ export class AccessError extends Error {
     super(message);
   }
 }
+
+/** Een pagina zonder de (mogelijk grote) inhoud en zoekvelden. */
+export type PageMeta = Omit<Page, "doc" | "searchText" | "searchVector">;
+const { doc: _doc, searchText: _st, searchVector: _sv, ...pageMetaColumns } = getTableColumns(pages);
 
 export type CurrentUser = Pick<User, "id" | "isAdmin" | "active" | "name" | "email">;
 
@@ -72,7 +76,7 @@ export async function getUser(id: string): Promise<User | undefined> {
 // ---------------------------------------------------------------------------
 
 /** De pagina zelf plus alle bovenliggende pagina's, van de pagina omhoog naar de wortel. */
-async function pageChain(pageId: string): Promise<Page[]> {
+async function pageChain(pageId: string): Promise<PageMeta[]> {
   const rows = await db.execute<{ id: string; depth: number }>(sql`
     WITH RECURSIVE chain AS (
       SELECT id, parent_id, 0 AS depth FROM pages WHERE id = ${pageId}
@@ -82,7 +86,7 @@ async function pageChain(pageId: string): Promise<Page[]> {
     SELECT id, depth FROM chain ORDER BY depth`);
   const ids = rows.map((r) => r.id);
   if (!ids.length) return [];
-  const found = await db.select().from(pages).where(inArray(pages.id, ids));
+  const found = await db.select(pageMetaColumns).from(pages).where(inArray(pages.id, ids));
   return ids.map((id) => found.find((p) => p.id === id)!).filter(Boolean);
 }
 
@@ -107,10 +111,10 @@ export async function getSpaceAccess(user: CurrentUser, spaceId: string) {
 }
 
 export interface PageAccess {
-  page: Page;
+  page: PageMeta;
   space: Space;
   /** Bovenliggende pagina's, van de wortel naar beneden (voor het kruimelpad). */
-  ancestors: Page[];
+  ancestors: PageMeta[];
   level: Level;
   viaAdmin: boolean;
 }
@@ -243,7 +247,7 @@ export async function createPage(user: CurrentUser, target: { spaceId?: string; 
   const [page] = await db
     .insert(pages)
     .values({ spaceId, parentId, title: target.title ?? "", createdBy: user.id, updatedBy: user.id, position: await nextPosition(spaceId, parentId) })
-    .returning();
+    .returning({ id: pages.id, spaceId: pages.spaceId, parentId: pages.parentId, title: pages.title });
   return page;
 }
 
@@ -291,8 +295,8 @@ export async function restorePage(user: CurrentUser, pageId: string) {
 
 /** Prullenbak: alleen de bovenste verwijderde pagina's die ik mag terugzetten. */
 export async function listTrash(user: CurrentUser) {
-  // Na 30 dagen definitief weg. Subpagina's uit dezelfde verwijdering hebben dezelfde deletedAt.
-  await db.delete(pages).where(sql`${pages.deletedAt} < now() - interval '30 days'`);
+  // Na 30 dagen definitief weg, inclusief geüploade bestanden.
+  await (await import("./files")).purgeExpiredTrash();
   const rows = await db
     .select({ id: pages.id, title: pages.title, deletedAt: pages.deletedAt, parentId: pages.parentId, spaceId: pages.spaceId })
     .from(pages)

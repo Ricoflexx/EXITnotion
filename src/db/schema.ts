@@ -10,8 +10,19 @@ import {
   primaryKey,
   index,
   uniqueIndex,
+  integer,
+  customType,
   type AnyPgColumn,
 } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
+
+const bytea = customType<{ data: Buffer; driverData: Buffer }>({
+  dataType: () => "bytea",
+});
+
+const tsvector = customType<{ data: string }>({
+  dataType: () => "tsvector",
+});
 
 /** Rechtenniveaus, van laag naar hoog. Volgorde staat ook in src/lib/permissions.ts. */
 export const accessLevel = pgEnum("access_level", ["read", "comment", "edit", "full"]);
@@ -72,8 +83,16 @@ export const pages = pgTable(
     icon: text("icon"),
     /** Volgorde tussen broertjes en zusjes. */
     position: doublePrecision("position").notNull().default(0),
-    /** Inhoud van de pagina. In blok 1 komt hier de editor (Yjs-document) bij. */
+    /** Losse kenmerken, zoals { type: "welcome" } voor de welkomstpagina die nog gevuld moet worden. */
     content: jsonb("content"),
+    /** De inhoud van de editor als Yjs-document (zie src/lib/docs.ts). Leeg = lege pagina. */
+    doc: bytea("doc"),
+    /** Platte tekst van de inhoud, voor zoeken (R70). Wordt bij elke opslag opnieuw bepaald. */
+    searchText: text("search_text").notNull().default(""),
+    /** Zoekindex op titel (zwaarder) en inhoud, met Nederlandse woordstammen. */
+    searchVector: tsvector("search_vector").generatedAlwaysAs(
+      sql`setweight(to_tsvector('dutch', coalesce(title, '')), 'A') || setweight(to_tsvector('dutch', coalesce(search_text, '')), 'B')`,
+    ),
     createdBy: uuid("created_by").notNull().references(() => users.id),
     updatedBy: uuid("updated_by").references(() => users.id),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
@@ -82,7 +101,11 @@ export const pages = pgTable(
     deletedAt: timestamp("deleted_at", { withTimezone: true }),
     deletedBy: uuid("deleted_by").references(() => users.id),
   },
-  (t) => [index("pages_space_idx").on(t.spaceId), index("pages_parent_idx").on(t.parentId)],
+  (t) => [
+    index("pages_space_idx").on(t.spaceId),
+    index("pages_parent_idx").on(t.parentId),
+    index("pages_search_idx").using("gin", t.searchVector),
+  ],
 );
 
 /** Een pagina delen met een collega (R04). Geldt ook voor alle subpagina's. */
@@ -126,6 +149,35 @@ export const auditLog = pgTable(
     at: timestamp("at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [index("audit_log_at_idx").on(t.at), index("audit_log_subject_idx").on(t.subjectUserId)],
+);
+
+/** Geüploade bestanden en afbeeldingen (R25). Het bestand zelf staat in Azure Blob Storage (lokaal: op schijf). */
+export const files = pgTable(
+  "files",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    /** De pagina waarop het bestand is geüpload; bepaalt wie het mag zien. */
+    pageId: uuid("page_id").notNull().references(() => pages.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    contentType: text("content_type").notNull(),
+    size: integer("size").notNull(),
+    storageKey: text("storage_key").notNull(),
+    uploadedBy: uuid("uploaded_by").notNull().references(() => users.id),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("files_page_idx").on(t.pageId)],
+);
+
+/** Wie een pagina nu open heeft, voor de melding "Nikki is deze pagina ook aan het bewerken". */
+export const pagePresence = pgTable(
+  "page_presence",
+  {
+    pageId: uuid("page_id").notNull().references(() => pages.id, { onDelete: "cascade" }),
+    userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+    editing: boolean("editing").notNull().default(false),
+    seenAt: timestamp("seen_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.pageId, t.userId] })],
 );
 
 export type User = typeof users.$inferSelect;

@@ -55,10 +55,9 @@ export function TitleEditor({ pageId, initial, editable }: { pageId: string; ini
           if (e.key === "Enter") (e.target as HTMLInputElement).blur();
         }}
       />
-      <div className="muted" aria-live="polite" style={{ fontSize: 13, minHeight: 20 }}>
-        {status === "bezig" && "Opslaan…"}
-        {status === "opgeslagen" && "Opgeslagen"}
-        {status === "fout" && "Opslaan lukte niet. Controleer je verbinding en probeer het opnieuw."}
+      {/* De editor toont al "Opgeslagen"; hier alleen een melding als de titel niet is opgeslagen. */}
+      <div className="title-status" aria-live="polite">
+        {status === "fout" && "De titel is niet opgeslagen. Controleer je verbinding en probeer het opnieuw."}
       </div>
     </div>
   );

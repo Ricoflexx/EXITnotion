@@ -8,3 +8,4 @@ next-env.d.ts
 .local-db/
 coverage/
 deploy/
+.local-uploads/

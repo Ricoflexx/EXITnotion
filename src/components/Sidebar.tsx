@@ -4,6 +4,7 @@ import type { CurrentUser } from "@/lib/access";
 import { getSidebar } from "@/lib/access";
 import { can } from "@/lib/permissions";
 import { PageTree } from "./PageTree";
+import { SearchShortcut } from "./SearchShortcut";
 
 export async function Sidebar({ user }: { user: CurrentUser }) {
   const data = await getSidebar(user);
@@ -11,6 +12,10 @@ export async function Sidebar({ user }: { user: CurrentUser }) {
     <nav className="sidebar" aria-label="Werkplek">
       <Link href="/" className="brand">
         EXIT<span>notion</span>
+      </Link>
+      <SearchShortcut />
+      <Link href="/zoeken" className="side-link search-link">
+        Zoeken <kbd>Ctrl K</kbd>
       </Link>
 
       {data.favorites.length > 0 && (

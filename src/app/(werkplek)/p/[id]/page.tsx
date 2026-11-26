@@ -8,6 +8,8 @@ import { can, LEVEL_LABELS, type Level } from "@/lib/permissions";
 import { requireUser } from "@/lib/session";
 import { favorite, move, newPage, restore, share, trash, unshare } from "@/app/actions";
 import { TitleEditor } from "@/components/TitleEditor";
+import { EditorLoader } from "@/components/editor/EditorLoader";
+import { loadDoc } from "@/lib/docs";
 
 export default async function PageView({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -32,7 +34,8 @@ export default async function PageView({ params }: { params: Promise<{ id: strin
   const editable = can.edit(level) && !viaAdmin && !page.deletedAt;
   const manageable = can.manage(level) && !viaAdmin;
 
-  const [children, grants, colleagues, fav, owner, sidebar] = await Promise.all([
+  const [docState, children, grants, colleagues, fav, owner, sidebar] = await Promise.all([
+    loadDoc(user, page.id),
     childPages(page.id),
     manageable ? listGrants(page.id) : Promise.resolve([]),
     manageable ? listColleagues() : Promise.resolve([]),
@@ -119,9 +122,14 @@ export default async function PageView({ params }: { params: Promise<{ id: strin
 
         <TitleEditor pageId={page.id} initial={page.title} editable={editable} />
 
-        <div className="placeholder-editor">
-          Hier komt de editor met blokken, het /-menu en slepen. Die bouwen we in blok 1.
-        </div>
+        <EditorLoader
+          key={page.id}
+          pageId={page.id}
+          initialState={docState}
+          editable={editable}
+          userName={user.name}
+          welcome={(page.content as { type?: string } | null)?.type === "welcome"}
+        />
 
         {children.length > 0 && (
           <section className="subpages" aria-label="Subpagina's">
