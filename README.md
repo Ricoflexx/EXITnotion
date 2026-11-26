@@ -22,19 +22,35 @@ Eigenaar: Ricardo. Azure en uitrol: Sven.
 
 ## Lokaal starten
 
-Nodig: Node 22, en PostgreSQL 16 of Docker.
+Nodig: [Node.js 22](https://nodejs.org) (LTS), Git, en [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+(of een eigen PostgreSQL 16). Werkt op Windows, Mac en Linux.
 
 ```bash
+git clone -b claude/zen-planck-lipd70 https://github.com/Ricoflexx/EXITnotion.git
+cd EXITnotion
 npm install
-cp .env.example .env.local      # vul AUTH_SECRET in: openssl rand -base64 32
-npm run db:local                # start PostgreSQL (Docker of lokaal)
+docker compose up -d db
+```
+
+Maak een bestand `.env.local` in de map met deze inhoud (zet achter `AUTH_SECRET` de uitkomst van
+`node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"`):
+
+```
+DATABASE_URL=postgres://exitnotion:exitnotion@localhost:5432/exitnotion
+AUTH_SECRET=
+AUTH_URL=http://localhost:3000
+AUTH_DEV_LOGIN=true
+```
+
+```bash
 npm run db:migrate
-npm run db:seed                 # testgebruikers: Beheerder Test, Stagiair Een, Stagiair Twee
+npm run db:seed
 npm run dev
 ```
 
-Open http://localhost:3000 en log in met de **testlogin**. Die werkt alleen lokaal (`AUTH_DEV_LOGIN=true`) en
-nooit op Azure.
+Open http://localhost:3000 en log in met de **testlogin** (Beheerder Test, Stagiair Een of Stagiair Twee). De testlogin
+werkt alleen lokaal en nooit op Azure. Wissel van gebruiker via Uitloggen, of gebruik een tweede browser(venster) om
+samen bewerken te proberen.
 
 ## Controleren
 
