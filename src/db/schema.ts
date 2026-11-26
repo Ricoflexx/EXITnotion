@@ -192,6 +192,21 @@ export const pagePresence = pgTable(
   (t) => [primaryKey({ columns: [t.pageId, t.userId] })],
 );
 
+/** Imports uit Notion (blok 3). Het Notion-token wordt nooit opgeslagen; alleen de voortgang en het logboek. */
+export const importJobs = pgTable("import_jobs", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  actorId: uuid("actor_id").notNull().references(() => users.id),
+  status: text("status", { enum: ["bezig", "klaar", "mislukt"] }).notNull().default("bezig"),
+  source: text("source").notNull(),
+  targetSpaceId: uuid("target_space_id").notNull().references(() => spaces.id),
+  rootPageId: uuid("root_page_id"),
+  log: jsonb("log").$type<string[]>().notNull().default([]),
+  stats: jsonb("stats").$type<Record<string, number>>().notNull().default({}),
+  error: text("error"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  finishedAt: timestamp("finished_at", { withTimezone: true }),
+});
+
 export type User = typeof users.$inferSelect;
 export type Space = typeof spaces.$inferSelect;
 export type Page = typeof pages.$inferSelect;

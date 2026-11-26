@@ -5,28 +5,23 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import * as Y from "yjs";
 import { Awareness } from "y-protocols/awareness";
-import { BlockNoteSchema, combineByGroup, defaultBlockSpecs, defaultInlineContentSpecs } from "@blocknote/core";
+import { combineByGroup } from "@blocknote/core";
 import { filterSuggestionItems } from "@blocknote/core/extensions";
 import { withCollaboration } from "@blocknote/core/yjs";
 import * as coreLocales from "@blocknote/core/locales";
 import { BlockNoteView } from "@blocknote/mantine";
 import {
   SuggestionMenuController,
-  createReactInlineContentSpec,
   getDefaultReactSlashMenuItems,
   useCreateBlockNote,
   type DefaultReactSuggestionItem,
 } from "@blocknote/react";
-import {
-  getMultiColumnSlashMenuItems,
-  locales as multiColumnLocales,
-  multiColumnDropCursor,
-  withMultiColumn,
-} from "@blocknote/xl-multi-column";
+import { getMultiColumnSlashMenuItems, locales as multiColumnLocales, multiColumnDropCursor } from "@blocknote/xl-multi-column";
 import { findMentionTargets, newInlineDatabase, pullDocUpdates, pushDocUpdate, templateDone } from "@/app/actions";
 import { FRAGMENT } from "@/lib/yjs-text";
 import { DB_TEMPLATE_LABELS, type DbTemplate } from "@/lib/db-templates";
-import { DatabaseBlock, editorUser } from "./DatabaseBlock";
+import { DatabaseBlockView, editorUser } from "./DatabaseBlock";
+import { editorSchema as schema, renderers, type MentionProps } from "./schema";
 import { logbookDay, templateBlocks, type TemplateName } from "./templates";
 
 // --- Verwijzingen met @ (R28) -------------------------------------------------------------
@@ -55,27 +50,8 @@ function MentionChip({ kind, targetId, label }: { kind: string; targetId: string
   );
 }
 
-const Mention = createReactInlineContentSpec(
-  {
-    type: "mention",
-    propSchema: {
-      kind: { default: "page" as "page" | "person" },
-      targetId: { default: "" },
-      label: { default: "" },
-    },
-    content: "none",
-  },
-  {
-    render: ({ inlineContent }) => <MentionChip {...inlineContent.props} />,
-  },
-);
-
-const schema = withMultiColumn(
-  BlockNoteSchema.create({
-    blockSpecs: { ...defaultBlockSpecs, database: DatabaseBlock },
-    inlineContentSpecs: { ...defaultInlineContentSpecs, mention: Mention },
-  }),
-);
+renderers.mention = (props: MentionProps) => <MentionChip {...props} />;
+renderers.database = (props) => <DatabaseBlockView {...props} />;
 
 const dictionary = { ...coreLocales.nl, multi_column: multiColumnLocales.nl };
 

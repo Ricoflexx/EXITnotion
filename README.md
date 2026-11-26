@@ -6,6 +6,8 @@ Draait op Azure en je logt in met je EXIT-account (Microsoft Entra ID).
 - Onderzoek, eisen en beoordeling: [`docs/beoordeling-eisen.html`](docs/beoordeling-eisen.html)
 - Bouwplan en besluiten: [`docs/bouwplan.md`](docs/bouwplan.md)
 - Azure inrichten: [`docs/azure-setup.md`](docs/azure-setup.md)
+- Importeren uit Notion: [`docs/notion-import.md`](docs/notion-import.md)
+- Testplan (twee weken naast Notion): [`docs/testplan.md`](docs/testplan.md)
 
 Eigenaar: Ricardo. Azure en uitrol: Sven.
 
@@ -16,7 +18,7 @@ Eigenaar: Ricardo. Azure en uitrol: Sven.
 | 0. Fundament | Inloggen, privé-ruimtes, teamruimtes, delen, rechten, beheerdersinzage met inzagelog, verplaatsen, overdragen, prullenbak, favorieten, Azure-uitrol | **Klaar** |
 | 1. Schrijven | Editor met blokken, /-menu, sneltoetsen, slepen, tabellen, kolommen, uitklapblokken, uploads, @-verwijzingen, automatisch opslaan, zoeken (Ctrl+K), wijzigingen van anderen binnen enkele seconden | **Klaar** |
 | 2. Plannen | Databases met tabel, bord en kalender, eigen velden en statussen, filteren, sorteren en groeperen, database midden op een pagina, Mijn taken met slimme lijsten (Vandaag, Morgen, 7 dagen), stagiair-werkplek naar Liv's voorbeeld, sjablonen (notulen, logboek, contentplanning, idee) | **Klaar** |
-| 3. Import en test | Notion-import, twee weken naast Notion | Volgende |
+| 3. Import en test | Import uit Notion (Beheer → Importeren uit Notion) en het testplan voor twee weken naast Notion | **Import klaar**; test start zodra de app op Azure draait |
 
 ## Lokaal starten
 
@@ -59,6 +61,8 @@ GitHub Actions draait dezelfde controles bij elke push (`.github/workflows/ci.ym
 | `src/lib/databases.ts` | Databases en rijen opslaan, Mijn taken, de stagiair-werkplek inrichten |
 | `src/components/database/` | Tabel, bord, kalender, cellen per veldtype, menu's voor velden en weergaven |
 | `src/components/editor/templates.ts` | Inhoud van sjabloonpagina's (werkplek, tips, notulen, logboek, …) |
+| `src/lib/notion/` | Import uit Notion: API-client, omzetten van blokken en databases, achtergrondtaak |
+| `src/components/editor/schema.tsx` | Het editorschema; ook gebruikt door de server (import) |
 | `src/lib/search.ts` | Zoeken met de Nederlandse full-text search van PostgreSQL |
 | `src/lib/files.ts`, `storage.ts` | Uploads: Azure Blob Storage, lokaal een map op schijf |
 | `src/auth.ts` | Inloggen met Entra ID (en de lokale testlogin) |

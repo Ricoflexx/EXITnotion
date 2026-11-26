@@ -259,8 +259,11 @@ kbd { font: inherit; font-size: 12px; border: 1px solid var(--line); border-radi
 .th-button:hover, .cell-button:hover { background: var(--hover); }
 .add-col { border: 0; background: none; cursor: pointer; color: var(--muted); font-size: 18px; width: 100%; padding: 4px; }
 .add-col:hover { background: var(--hover); }
-.title-cell { display: flex; align-items: center; gap: 4px; padding: 5px 8px; min-height: 34px; }
-.row-link { font-weight: 700; text-decoration: none; flex: 1; min-width: 0; overflow-wrap: anywhere; }
+/* min-width op cellen zelf negeert de browser in een smalle tabel; daarom op de inhoud. */
+.title-cell { display: flex; align-items: center; gap: 4px; padding: 5px 8px; min-height: 34px; min-width: 180px; }
+.db-table td .cell-button, .db-table td .cell-input { min-width: 110px; }
+.db-table td.col-text .cell-button, .db-table td.col-url .cell-button { min-width: 170px; }
+.row-link { font-weight: 700; text-decoration: none; flex: 1; min-width: 0; overflow-wrap: break-word; }
 .row-link:hover { text-decoration: underline; }
 .title-cell .rename { opacity: 0; }
 tr:hover .title-cell .rename, .title-cell .rename:focus-visible { opacity: 1; }
@@ -361,3 +364,14 @@ tr:hover .title-cell .rename, .title-cell .rename:focus-visible { opacity: 1; }
   .board-col { flex-basis: 230px; }
   .cal-day { min-height: 70px; }
 }
+
+/* Import uit Notion */
+.import-form { display: grid; gap: 14px; max-width: 620px; margin: 18px 0 28px; }
+.import-form label { display: grid; gap: 4px; font-weight: 600; }
+.import-form input, .import-form select { font-size: 16px; padding: 7px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
+.import-form .hint { font-weight: 500; font-size: 14px; }
+.import-form .btn { justify-self: start; }
+.import-log { background: var(--sidebar); border-radius: 6px; padding: 10px 12px; font-size: 13px; max-height: 320px; overflow: auto; white-space: pre-wrap; margin: 0; }
+.status-bezig { background: var(--orange-soft); }
+.status-klaar { background: var(--c-green-bg); color: var(--c-green-fg); }
+.status-mislukt { background: var(--c-red-bg); color: var(--c-red-fg); }

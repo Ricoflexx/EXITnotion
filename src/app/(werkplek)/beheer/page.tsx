@@ -13,6 +13,7 @@ const ACTIONS: Record<string, string> = {
   "teamruimte.gemaakt": "Maakte teamruimte",
   "teamruimte.lid": "Wijzigde lid van teamruimte",
   "werk.overgedragen": "Droeg werk over",
+  "notion.import": "Importeerde uit Notion",
 };
 
 const fmt = (d: Date | null) =>
@@ -122,6 +123,10 @@ export default async function AdminPage() {
         </label>
         <button className="btn primary" type="submit">Overdragen</button>
       </form>
+
+      <h2>Importeren uit Notion</h2>
+      <p className="muted">Werkplekken uit Notion overzetten, met subpagina&apos;s, databases en afbeeldingen.</p>
+      <p><Link href="/beheer/import" className="btn">Naar importeren</Link></p>
 
       <h2>Inzagelog</h2>
       <p className="muted">Elke inzage door een beheerder in iets wat niet met hem gedeeld is, en elke beheeractie. Dit log wordt nooit door de app verwijderd.</p>

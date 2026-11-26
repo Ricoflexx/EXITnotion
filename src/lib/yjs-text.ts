@@ -30,6 +30,8 @@ export function extractText(doc: Y.Doc): string {
       }
     }
     for (const child of node.toArray()) walk(child as Y.XmlElement, line);
+    // Tabelcellen los van elkaar houden, zodat "Wie" en "Functie" aparte woorden blijven.
+    if (node instanceof Y.XmlElement && (node.nodeName === "tableCell" || node.nodeName === "tableHeader")) line.push(" ");
   };
   const rest: string[] = [];
   walk(doc.getXmlFragment(FRAGMENT), rest);

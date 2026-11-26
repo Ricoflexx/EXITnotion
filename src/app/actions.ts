@@ -259,6 +259,18 @@ export async function adminSetMember(form: FormData) {
   revalidatePath("/", "layout");
 }
 
+export async function adminStartImport(form: FormData) {
+  const user = await requireUser();
+  const { startNotionImport } = await import("@/lib/notion/import");
+  const { jobId } = await startNotionImport(user, {
+    token: str(form, "token"),
+    source: str(form, "source"),
+    targetSpaceId: id.parse(str(form, "targetSpaceId")),
+  });
+  // De import loopt op de achtergrond door; de pagina toont de voortgang.
+  redirect(`/beheer/import?taak=${jobId}`);
+}
+
 export async function adminTransfer(form: FormData) {
   const user = await requireUser();
   const result = await admin.transferWork(user, {
