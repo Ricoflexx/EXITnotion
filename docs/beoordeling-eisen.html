@@ -107,20 +107,73 @@ footer .pay{font-family:var(--display);color:var(--green-ink);font-size:22px;let
 
 <header class="hero">
   <div class="wrap">
-    <div class="eyebrow">EXITnotion · stap 3 van 5</div>
+    <div class="eyebrow">EXITnotion · stap 4 van 5</div>
     <h1>Wat moet ons eigen Notion kunnen?</h1>
-    <p class="lead">We bouwen een eigen werkplek in de stijl van Notion voor de stagiairs van EXIT Toys. Hij komt op de Azure-server en je logt in met je eigen EXIT-account. De beoordeling is klaar: hieronder staat de uitkomst, het aangepaste plan en wat we in stap 4 kritisch moeten bekijken.</p>
+    <p class="lead">We bouwen een eigen werkplek in de stijl van Notion voor de stagiairs van EXIT Toys. Hij komt op de Azure-server en je logt in met je eigen EXIT-account. Het plan is kritisch bekeken: hieronder staat versie 1, de planning en de besluiten die nog nodig zijn. Daaronder de uitkomst van de beoordeling.</p>
     <ul class="steps" aria-label="Stappenplan">
       <li class="done">1. Onderzoek</li>
       <li class="done">2. Beoordelen met stagiairs</li>
-      <li class="now">3. Plan aanpassen</li>
-      <li>4. Kritisch naar het plan kijken</li>
+      <li class="done">3. Plan aanpassen</li>
+      <li class="now">4. Kritisch naar het plan kijken</li>
       <li>5. Bouwen</li>
     </ul>
   </div>
 </header>
 
 <main class="wrap">
+
+<h2>Stap 4: kritische blik</h2>
+<div class="grid2">
+  <div class="box"><h3>Versie 1 eerst</h3><p>47 Moet-eisen is te veel voor één eerste versie. Versie 1 bevat alleen wat nodig is om Notion dagelijks los te laten. De toets: kan Liv haar huidige werkplek erin nabouwen en elke dag gebruiken? De rest blijft Moet, maar komt in versie 1.1.</p></div>
+  <div class="box"><h3>Twee weken testen</h3><p>Op de vraag wat je zou missen was het antwoord "geen idee". De echte behoefte zien we pas bij gebruik. Daarom draait versie 1 eerst twee weken naast Notion, met Liv's werkplek als testcase.</p></div>
+</div>
+
+<h3>Wat er in versie 1 zit</h3>
+<div class="tablewrap"><table>
+<thead><tr><th>Gebied</th><th>Versie 1</th><th>Later (1.1 of 2)</th></tr></thead>
+<tbody>
+<tr><td>Toegang</td><td>Inloggen met EXIT-account, privé-omgeving, beheerders zien alles (met inzagelog), delen, teamruimte</td><td>Overdragen bij vertrek</td></tr>
+<tr><td>Werkplek</td><td>Stagiair-werkplek, kolommen, database op een pagina, uitklapblokken, sjablonen</td><td>Iconen en omslagfoto</td></tr>
+<tr><td>Schrijven</td><td>Basisblokken, /-menu, sneltoetsen, slepen, tabellen, uploads, @-verwijzingen, automatisch opslaan</td><td>Embeds, linkkaartjes, Box</td></tr>
+<tr><td>Plannen</td><td>Takendatabase, eigen statussen, kalender, bord, filteren en groeperen, Mijn taken, dagelijkse To Do</td><td>Snelle invoer, prioriteit, herhalen, herinneringen, tijdlijn</td></tr>
+<tr><td>Notuleren en ideeën</td><td>Notulensjabloon, logboek per dag</td><td>Actiepunten worden taken, notulenoverzicht, ideeënbord, archief, canvas</td></tr>
+<tr><td>Samenwerken</td><td>Melding "Liv is deze pagina aan het bewerken"</td><td>Live samen bewerken, opmerkingen, meldingen, versiegeschiedenis</td></tr>
+<tr><td>Vinden en beheer</td><td>Zoeken, favorieten, prullenbak, beheerdersoverzicht, back-ups, Nederlands, snel, import uit Notion</td><td>Export naar pdf en Word, offline</td></tr>
+</tbody></table></div>
+<p class="src">De editor bouwen we vanaf dag één zo dat live samen bewerken later alleen nog aangezet hoeft te worden. Achteraf ombouwen is duur.</p>
+
+<h3>De kritische punten</h3>
+<ul class="plain">
+  <li><b>Zelf bouwen is een bewuste keuze, niet de goedkoopste.</b> Het Notion-abonnement voor een handvol mensen kost minder dan bouwen en onderhouden. We bouwen omdat we eigen accounts, data op Azure, inzage voor beheerders en een simpelere app willen. Dat betekent ook: klein en onderhoudbaar bouwen.</li>
+  <li><b>Afspraak over tools.</b> EXITnotion is de persoonlijke werkplek en de teamhubs van de stagiairs. Monday blijft voor projecten waar collega's op wachten. Box blijft voor bestanden (EXITnotion linkt ernaar), Teams voor chat en Word voor officiele documenten zoals het stageverslag.</li>
+  <li><b>Offline van Zou moeten naar Niet nu.</b> Er wordt op kantoor gewerkt, werken op je telefoon staat al op Niet nu, en offline is een van de duurste onderdelen.</li>
+  <li><b>Privacy.</b> Bij de eerste keer inloggen meldt de app dat beheerders alles kunnen zien. Elke inzage in een privé-pagina van een ander wordt gelogd (nieuwe eis R93).</li>
+  <li><b>Licentie.</b> De kolommen-functie van de editor valt onder GPL of een betaalde licentie. Voor intern gebruik is dat waarschijnlijk geen probleem, maar we bevestigen het voordat we bouwen.</li>
+  <li><b>Onderhoud.</b> Stagiairs gaan, de code blijft. Daarom één taal (TypeScript), infrastructuur vastgelegd in code, automatische uitrol, tests voor rechten en opslag, en een vaste eigenaar binnen EXIT.</li>
+</ul>
+
+<h3>Grove planning</h3>
+<div class="tablewrap"><table>
+<thead><tr><th>Blok</th><th>Inhoud</th><th>Weken</th></tr></thead>
+<tbody>
+<tr><td>0. Fundament</td><td>Inloggen, rechten, Azure, back-ups</td><td>2–3</td></tr>
+<tr><td>1. Schrijven</td><td>Editor, paginaboom, uploads, zoeken</td><td>3–4</td></tr>
+<tr><td>2. Plannen</td><td>Databases, weergaven, To Do, stagiair-werkplek</td><td>4–5</td></tr>
+<tr><td>3. Import en test</td><td>Notion-import, twee weken naast Notion</td><td>2–3</td></tr>
+<tr><td><b>Versie 1</b></td><td></td><td><b>11–15</b></td></tr>
+<tr><td>Versie 1.1</td><td>Samenwerken, notulen en ideeën, Box, TickTick-functies</td><td>5–7</td></tr>
+</tbody></table></div>
+<p class="src">Aanname: één ontwikkelaar met Claude Code, ongeveer drie dagen per week. Dit is een schatting met een ruime marge, geen toezegging. Het volledige bouwplan, met de technische keuzes, staat in de repository in <code>docs/bouwplan.md</code>.</p>
+
+<h3>Besluiten die nodig zijn</h3>
+<ul class="plain">
+  <li><b>B1.</b> Akkoord met deze versie 1? Moeten verplaatsen tussen ruimtes (R52) en overdragen (R81) er ook in, zodat de Social Media Hub meteen mee kan?</li>
+  <li><b>B2.</b> Offline naar Niet nu?</li>
+  <li><b>B3.</b> Akkoord met de afspraak over tools?</li>
+  <li><b>B4.</b> Wie bouwt, en wie onderhoudt het na de stage?</li>
+  <li><b>B5.</b> Akkoord met het inzagelog en de melding bij de eerste keer inloggen?</li>
+  <li><b>B6.</b> Wie regelt de toegang tot Azure (resourcegroep, app-registratie in Entra ID, domein)? Tot die tijd bouwen we lokaal.</li>
+</ul>
 
 <h2>Uitkomst van de beoordeling</h2>
 <div class="grid2">
