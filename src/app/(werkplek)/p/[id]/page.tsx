@@ -6,7 +6,13 @@ import { favorites, users } from "@/db/schema";
 import { AccessError, childPages, getPageAccess, getSidebar, listColleagues, listGrants, type TreePage } from "@/lib/access";
 import { can, LEVEL_LABELS, type Level } from "@/lib/permissions";
 import { requireUser } from "@/lib/session";
-import { favorite, move, newPage, restore, share, trash, unshare } from "@/app/actions";
+import { favorite, toggleFullWidth, move, newDatabase, newPage, newPageFromTemplate, restore, share, trash, unshare } from "@/app/actions";
+import { DatabaseView } from "@/components/database/DatabaseView";
+import { RowProperties } from "@/components/database/RowProperties";
+import { getDatabase, getRowContext } from "@/lib/databases";
+import { DB_TEMPLATES, DB_TEMPLATE_LABELS } from "@/lib/db-templates";
+import { PAGE_TEMPLATES, PAGE_TEMPLATE_LABELS } from "@/lib/page-templates";
+import type { TemplateName } from "@/components/editor/templates";
 import { TitleEditor } from "@/components/TitleEditor";
 import { EditorLoader } from "@/components/editor/EditorLoader";
 import { loadDoc } from "@/lib/docs";
@@ -34,15 +40,25 @@ export default async function PageView({ params }: { params: Promise<{ id: strin
   const editable = can.edit(level) && !viaAdmin && !page.deletedAt;
   const manageable = can.manage(level) && !viaAdmin;
 
-  const [docState, children, grants, colleagues, fav, owner, sidebar] = await Promise.all([
-    loadDoc(user, page.id),
+  const isDatabase = page.kind === "database";
+  const isRow = page.kind === "row";
+  const [docState, children, grants, colleagues, fav, owner, sidebar, dbData, rowCtx] = await Promise.all([
+    isDatabase ? Promise.resolve(null) : loadDoc(user, page.id),
     childPages(page.id),
     manageable ? listGrants(page.id) : Promise.resolve([]),
     manageable ? listColleagues() : Promise.resolve([]),
     db.query.favorites.findFirst({ where: and(eq(favorites.userId, user.id), eq(favorites.pageId, page.id)) }),
     space.ownerId ? db.query.users.findFirst({ where: eq(users.id, space.ownerId), columns: { name: true } }) : null,
-    manageable ? getSidebar(user) : Promise.resolve(null),
+    manageable && !isRow ? getSidebar(user) : Promise.resolve(null),
+    isDatabase ? getDatabase(user, page.id) : Promise.resolve(null),
+    isRow ? getRowContext(user, page.id) : Promise.resolve(null),
   ]);
+  const content = page.content as { template?: TemplateName; refs?: Record<string, string>; type?: string } | null;
+  const template = content?.template
+    ? { name: content.template, refs: content.refs ?? {} }
+    : content?.type === "welcome"
+      ? { name: "welcome" as const, refs: {} }
+      : null;
 
   // Verplaatsen (R52): ruimtes en pagina's waar ik mag bewerken, zonder deze pagina en zijn subpagina's.
   const moveTargets: { value: string; label: string }[] = [];
@@ -71,7 +87,7 @@ export default async function PageView({ params }: { params: Promise<{ id: strin
         return d;
       };
       for (const p of s.pages) {
-        if (excluded.has(p.id)) continue;
+        if (excluded.has(p.id) || p.kind !== "page") continue;
         moveTargets.push({ value: `page:${p.id}`, label: `${s.space.name} / ${"  ".repeat(depth(p))}${p.title || "Naamloos"}` });
       }
     }
@@ -94,6 +110,15 @@ export default async function PageView({ params }: { params: Promise<{ id: strin
         </nav>
         <span className="spacer" />
         <span className="tag" title="Jouw rechten op deze pagina">{LEVEL_LABELS[level]}</span>
+        {editable && (
+          <form action={toggleFullWidth}>
+            <input type="hidden" name="pageId" value={page.id} />
+            <input type="hidden" name="fullWidth" value={String(!page.fullWidth)} />
+            <button className="btn ghost" type="submit" title={page.fullWidth ? "Smalle pagina" : "Volle breedte"}>
+              {page.fullWidth ? "⇥⇤ Smal" : "⇤⇥ Breed"}
+            </button>
+          </form>
+        )}
         {!page.deletedAt && (
           <form action={favorite}>
             <input type="hidden" name="pageId" value={page.id} />
@@ -102,7 +127,7 @@ export default async function PageView({ params }: { params: Promise<{ id: strin
         )}
       </header>
 
-      <article className="page">
+      <article className={"page" + (page.fullWidth ? " page-full" : isDatabase ? " page-wide" : "")}>
         {viaAdmin && (
           <div className="banner admin" role="status">
             Je bekijkt deze pagina als beheerder. Hij is niet met je gedeeld, dus deze inzage is vastgelegd in het inzagelog.
@@ -122,28 +147,60 @@ export default async function PageView({ params }: { params: Promise<{ id: strin
 
         <TitleEditor pageId={page.id} initial={page.title} editable={editable} />
 
-        <EditorLoader
-          key={page.id}
-          pageId={page.id}
-          initialState={docState}
-          editable={editable}
-          userName={user.name}
-          welcome={(page.content as { type?: string } | null)?.type === "welcome"}
-        />
+        {rowCtx && (
+          <RowProperties
+            rowId={page.id}
+            databaseId={rowCtx.databaseId}
+            schema={rowCtx.schema}
+            props={rowCtx.props}
+            people={rowCtx.people}
+            editable={editable}
+          />
+        )}
 
-        {children.length > 0 && (
+        {dbData ? (
+          <DatabaseView key={page.id} databaseId={page.id} initial={dbData} me={user.id} />
+        ) : (
+          <EditorLoader
+            key={page.id}
+            pageId={page.id}
+            initialState={docState}
+            editable={editable}
+            userName={user.name}
+            userId={user.id}
+            template={editable ? template : null}
+          />
+        )}
+
+        {children.length > 0 && !isDatabase && (
           <section className="subpages" aria-label="Subpagina's">
             {children.map((c) => (
-              <Link key={c.id} href={`/p/${c.id}`}>📄 {c.title || "Naamloos"}</Link>
+              <Link key={c.id} href={`/p/${c.id}`}>{c.kind === "database" ? "▦" : "📄"} {c.title || "Naamloos"}</Link>
             ))}
           </section>
         )}
 
-        {editable && (
-          <form action={newPage} style={{ marginTop: 12 }}>
-            <input type="hidden" name="parentId" value={page.id} />
-            <button className="btn ghost" type="submit">+ Subpagina</button>
-          </form>
+        {editable && !isDatabase && !isRow && (
+          <div className="row page-add">
+            <form action={newPage}>
+              <input type="hidden" name="parentId" value={page.id} />
+              <button className="btn ghost" type="submit">+ Subpagina</button>
+            </form>
+            <form action={newPageFromTemplate} className="row">
+              <input type="hidden" name="parentId" value={page.id} />
+              <select name="template" aria-label="Sjabloon" id="page-template">
+                {PAGE_TEMPLATES.map((t) => <option key={t} value={t}>{PAGE_TEMPLATE_LABELS[t]}</option>)}
+              </select>
+              <button className="btn ghost" type="submit">+ Uit sjabloon</button>
+            </form>
+            <form action={newDatabase} className="row">
+              <input type="hidden" name="parentId" value={page.id} />
+              <select name="template" aria-label="Soort database" id="db-template">
+                {DB_TEMPLATES.map((t) => <option key={t} value={t}>{DB_TEMPLATE_LABELS[t]}</option>)}
+              </select>
+              <button className="btn ghost" type="submit">+ Database</button>
+            </form>
+          </div>
         )}
 
         {manageable && !page.deletedAt && (
@@ -180,7 +237,7 @@ export default async function PageView({ params }: { params: Promise<{ id: strin
               </div>
             </details>
 
-            <details className="panel">
+            {!isRow && <details className="panel">
               <summary>Verplaatsen</summary>
               <div>
                 <form action={move} className="row">
@@ -194,7 +251,7 @@ export default async function PageView({ params }: { params: Promise<{ id: strin
                 </form>
                 <p className="muted" style={{ margin: 0, fontSize: 14 }}>Subpagina&apos;s gaan mee. Ook naar een teamruimte, zoals de Social Media Hub.</p>
               </div>
-            </details>
+            </details>}
 
             <form action={trash} style={{ marginTop: 16 }}>
               <input type="hidden" name="pageId" value={page.id} />

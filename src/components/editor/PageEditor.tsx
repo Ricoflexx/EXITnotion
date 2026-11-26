@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import * as Y from "yjs";
 import { Awareness } from "y-protocols/awareness";
-import { BlockNoteSchema, combineByGroup, defaultInlineContentSpecs } from "@blocknote/core";
+import { BlockNoteSchema, combineByGroup, defaultBlockSpecs, defaultInlineContentSpecs } from "@blocknote/core";
 import { filterSuggestionItems } from "@blocknote/core/extensions";
 import { withCollaboration } from "@blocknote/core/yjs";
 import * as coreLocales from "@blocknote/core/locales";
@@ -23,9 +23,11 @@ import {
   multiColumnDropCursor,
   withMultiColumn,
 } from "@blocknote/xl-multi-column";
-import { findMentionTargets, pullDocUpdates, pushDocUpdate, welcomeDone } from "@/app/actions";
+import { findMentionTargets, newInlineDatabase, pullDocUpdates, pushDocUpdate, templateDone } from "@/app/actions";
 import { FRAGMENT } from "@/lib/yjs-text";
-import { welcomeBlocks } from "./welcome";
+import { DB_TEMPLATE_LABELS, type DbTemplate } from "@/lib/db-templates";
+import { DatabaseBlock, editorUser } from "./DatabaseBlock";
+import { logbookDay, templateBlocks, type TemplateName } from "./templates";
 
 // --- Verwijzingen met @ (R28) -------------------------------------------------------------
 
@@ -70,6 +72,7 @@ const Mention = createReactInlineContentSpec(
 
 const schema = withMultiColumn(
   BlockNoteSchema.create({
+    blockSpecs: { ...defaultBlockSpecs, database: DatabaseBlock },
     inlineContentSpecs: { ...defaultInlineContentSpecs, mention: Mention },
   }),
 );
@@ -99,11 +102,13 @@ export interface PageEditorProps {
   initialState: string | null;
   editable: boolean;
   userName: string;
-  /** Lege welkomstpagina: vul hem met uitleg (alleen voor wie mag bewerken). */
-  welcome: boolean;
+  userId: string;
+  /** Sjabloonpagina die nog gevuld moet worden (alleen voor wie mag bewerken). */
+  template: { name: TemplateName; refs: Record<string, string> } | null;
 }
 
-export default function PageEditor({ pageId, initialState, editable, userName, welcome }: PageEditorProps) {
+export default function PageEditor({ pageId, initialState, editable, userName, userId, template }: PageEditorProps) {
+  editorUser.id = userId;
   const doc = useMemo(() => {
     const d = new Y.Doc();
     if (initialState) Y.applyUpdate(d, fromB64(initialState), REMOTE);
@@ -222,22 +227,70 @@ export default function PageEditor({ pageId, initialState, editable, userName, w
     };
   }, [doc, pageId]);
 
-  // --- Welkomstpagina vullen ---------------------------------------------------------------
+  // --- Sjabloonpagina vullen (welkom, werkplek, notulen, …) --------------------------------
+  const templateName = template?.name;
   useEffect(() => {
-    if (!welcome || !editable) return;
+    if (!template || !editable) return;
     const t = setTimeout(() => {
-      const isEmpty = editor.document.length <= 1 && !editor.document[0]?.content?.toString();
-      if (isEmpty) editor.replaceBlocks(editor.document, welcomeBlocks());
-      void welcomeDone(pageId);
+      const first = editor.document[0];
+      const isEmpty = editor.document.length <= 1 && (!first || (Array.isArray(first.content) && first.content.length === 0));
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if (isEmpty) editor.replaceBlocks(editor.document, templateBlocks(template.name, template.refs) as any);
+      void templateDone(pageId);
     }, 300);
     return () => clearTimeout(t);
-  }, [welcome, editable, editor, pageId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [templateName, editable, editor, pageId]);
 
   // --- Menu's -------------------------------------------------------------------------------
   const slashItems = useCallback(
-    async (query: string) =>
-      filterSuggestionItems(combineByGroup(getDefaultReactSlashMenuItems(editor), getMultiColumnSlashMenuItems(editor)), query),
-    [editor],
+    async (query: string) => {
+      const insertAfterCursor = (blocks: unknown[]) => {
+        const at = editor.getTextCursorPosition().block;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        editor.insertBlocks(blocks as any, at, "after");
+      };
+      const dbItem = (template: DbTemplate, aliases: string[]): DefaultReactSuggestionItem => ({
+        title: template === "leeg" ? "Database" : `Database: ${DB_TEMPLATE_LABELS[template]}`,
+        subtext: template === "leeg" ? "Lege tabel met eigen velden" : "Tabel, bord of kalender, midden op de pagina",
+        group: "Databases",
+        aliases: ["database", "tabel", "kalender", "bord", ...aliases],
+        onItemClick: async () => {
+          try {
+            const databaseId = await newInlineDatabase(pageId, template);
+            insertAfterCursor([{ type: "database", props: { databaseId } }]);
+          } catch {
+            alertOnce("De database kon niet gemaakt worden. Heb je bewerkrechten op deze pagina?");
+          }
+        },
+      });
+      const exitItems: DefaultReactSuggestionItem[] = [
+        dbItem("taken", ["taken", "planning", "agenda"]),
+        dbItem("todo", ["todo", "to do", "taken"]),
+        dbItem("contentkalender", ["content", "social", "posts"]),
+        dbItem("notities", ["notities"]),
+        dbItem("leeg", ["leeg"]),
+        {
+          title: "Logboekdag",
+          subtext: "Kopje met de datum van vandaag en een lijstje",
+          group: "EXIT",
+          aliases: ["logboek", "dag", "vandaag", "datum"],
+          onItemClick: () => insertAfterCursor(logbookDay()),
+        },
+        {
+          title: "Datum van vandaag",
+          group: "EXIT",
+          aliases: ["datum", "vandaag", "today"],
+          onItemClick: () =>
+            editor.insertInlineContent(new Date().toLocaleDateString("nl-NL", { day: "numeric", month: "long", year: "numeric" }) + " "),
+        },
+      ];
+      return filterSuggestionItems(
+        combineByGroup(getDefaultReactSlashMenuItems(editor), getMultiColumnSlashMenuItems(editor), exitItems),
+        query,
+      );
+    },
+    [editor, pageId],
   );
 
   const mentionItems = useCallback(

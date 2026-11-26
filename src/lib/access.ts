@@ -1,5 +1,5 @@
 import "server-only";
-import { and, asc, desc, eq, getTableColumns, inArray, isNull, isNotNull, sql } from "drizzle-orm";
+import { and, asc, desc, eq, getTableColumns, inArray, isNull, isNotNull, ne, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { auditLog, favorites, pageGrants, pages, spaceMembers, spaces, users, type Page, type Space, type User } from "@/db/schema";
 import { can, canMove, resolveAccess, type GrantLevel, type Level } from "./permissions";
@@ -51,6 +51,8 @@ export async function upsertUserFromLogin(input: {
       .returning();
   }
   await ensurePrivateSpace(user);
+  // Stagiair-werkplek (R10): eenmalig inrichten. Dynamisch geïmporteerd om een import-kring te voorkomen.
+  await (await import("./databases")).provisionWorkspace(user);
   return user;
 }
 
@@ -62,7 +64,7 @@ export async function ensurePrivateSpace(user: Pick<User, "id" | "name">): Promi
     spaceId: space.id,
     title: "Welkom in je werkplek",
     createdBy: user.id,
-    content: { type: "welcome" },
+    content: { template: "welcome" },
   });
   return space;
 }
@@ -165,20 +167,21 @@ export async function requirePageLevel(user: CurrentUser, pageId: string, check:
 // Zijbalk
 // ---------------------------------------------------------------------------
 
-export type TreePage = Pick<Page, "id" | "title" | "icon" | "parentId" | "position">;
+export type TreePage = Pick<Page, "id" | "title" | "icon" | "parentId" | "position" | "kind">;
 export interface SidebarSpace {
   space: Space;
   level: Level;
   pages: TreePage[];
 }
 
-const treeColumns = { id: pages.id, title: pages.title, icon: pages.icon, parentId: pages.parentId, position: pages.position };
+const treeColumns = { id: pages.id, title: pages.title, icon: pages.icon, parentId: pages.parentId, position: pages.position, kind: pages.kind };
 
 async function spacePages(spaceId: string): Promise<TreePage[]> {
   return db
     .select(treeColumns)
     .from(pages)
-    .where(and(eq(pages.spaceId, spaceId), isNull(pages.deletedAt)))
+    // Rijen van databases staan niet in de zijbalk; die zie je in de database zelf.
+    .where(and(eq(pages.spaceId, spaceId), isNull(pages.deletedAt), ne(pages.kind, "row")))
     .orderBy(asc(pages.position), asc(pages.createdAt));
 }
 
@@ -235,6 +238,7 @@ export async function createPage(user: CurrentUser, target: { spaceId?: string; 
   let parentId: string | null = null;
   if (target.parentId) {
     const parent = await requirePageLevel(user, target.parentId, can.edit);
+    if (parent.page.kind === "database") throw new AccessError("Voeg in een database een rij toe in plaats van een subpagina.");
     spaceId = parent.space.id;
     parentId = parent.page.id;
   } else if (target.spaceId) {
@@ -249,6 +253,11 @@ export async function createPage(user: CurrentUser, target: { spaceId?: string; 
     .values({ spaceId, parentId, title: target.title ?? "", createdBy: user.id, updatedBy: user.id, position: await nextPosition(spaceId, parentId) })
     .returning({ id: pages.id, spaceId: pages.spaceId, parentId: pages.parentId, title: pages.title });
   return page;
+}
+
+export async function setFullWidth(user: CurrentUser, pageId: string, fullWidth: boolean) {
+  await requirePageLevel(user, pageId, can.edit);
+  await db.update(pages).set({ fullWidth }).where(eq(pages.id, pageId));
 }
 
 export async function renamePage(user: CurrentUser, pageId: string, title: string) {
@@ -320,11 +329,13 @@ export async function listTrash(user: CurrentUser) {
 /** Een pagina met subpagina's verplaatsen, ook naar een andere ruimte (R52). */
 export async function movePage(user: CurrentUser, pageId: string, target: { spaceId?: string; parentId?: string | null }) {
   const source = await requirePageLevel(user, pageId, can.manage);
+  if (source.page.kind === "row") throw new AccessError("Een rij blijft in zijn database.");
   let targetSpaceId: string;
   let targetLevel: Level;
   let isDescendant = false;
   if (target.parentId) {
     const t = await getPageAccess(user, target.parentId, { logAdminView: false });
+    if (t.page.kind !== "page") throw new AccessError("Je kunt een pagina niet in een database of rij zetten.");
     targetSpaceId = t.space.id;
     targetLevel = t.viaAdmin ? "none" : t.level;
     isDescendant = (await descendantIds(pageId)).includes(target.parentId);
@@ -396,6 +407,6 @@ export async function childPages(pageId: string) {
   return db
     .select(treeColumns)
     .from(pages)
-    .where(and(eq(pages.parentId, pageId), isNull(pages.deletedAt)))
+    .where(and(eq(pages.parentId, pageId), isNull(pages.deletedAt), ne(pages.kind, "row")))
     .orderBy(asc(pages.position), asc(pages.createdAt));
 }

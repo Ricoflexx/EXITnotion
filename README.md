@@ -15,8 +15,8 @@ Eigenaar: Ricardo. Azure en uitrol: Sven.
 |---|---|---|
 | 0. Fundament | Inloggen, privé-ruimtes, teamruimtes, delen, rechten, beheerdersinzage met inzagelog, verplaatsen, overdragen, prullenbak, favorieten, Azure-uitrol | **Klaar** |
 | 1. Schrijven | Editor met blokken, /-menu, sneltoetsen, slepen, tabellen, kolommen, uitklapblokken, uploads, @-verwijzingen, automatisch opslaan, zoeken (Ctrl+K), wijzigingen van anderen binnen enkele seconden | **Klaar** |
-| 2. Plannen | Databases met tabel, bord en kalender, Mijn taken, To Do, stagiair-werkplek | Volgende |
-| 3. Import en test | Notion-import, twee weken naast Notion | |
+| 2. Plannen | Databases met tabel, bord en kalender, eigen velden en statussen, filteren, sorteren en groeperen, database midden op een pagina, Mijn taken met slimme lijsten (Vandaag, Morgen, 7 dagen), stagiair-werkplek naar Liv's voorbeeld, sjablonen (notulen, logboek, contentplanning, idee) | **Klaar** |
+| 3. Import en test | Notion-import, twee weken naast Notion | Volgende |
 
 ## Lokaal starten
 
@@ -54,6 +54,11 @@ GitHub Actions draait dezelfde controles bij elke push (`.github/workflows/ci.ym
 | `src/lib/admin.ts` | Beheerfuncties: gebruikers, teamruimtes, overdragen, inzagelog |
 | `src/lib/docs.ts` | Pagina-inhoud als Yjs-document: opslaan, samenvoegen, ophalen, wie er nog meer is |
 | `src/components/editor/` | De editor (BlockNote) met /-menu, kolommen en @-verwijzingen |
+| `src/lib/db-model.ts` | Databases: veldtypes, weergaven, filteren, sorteren, groeperen (pure functies, ook in de browser) |
+| `src/lib/db-templates.ts` | Databasesjablonen: Kalender en taken, To Do, Contentkalender, Notities, Afgeronde projecten |
+| `src/lib/databases.ts` | Databases en rijen opslaan, Mijn taken, de stagiair-werkplek inrichten |
+| `src/components/database/` | Tabel, bord, kalender, cellen per veldtype, menu's voor velden en weergaven |
+| `src/components/editor/templates.ts` | Inhoud van sjabloonpagina's (werkplek, tips, notulen, logboek, …) |
 | `src/lib/search.ts` | Zoeken met de Nederlandse full-text search van PostgreSQL |
 | `src/lib/files.ts`, `storage.ts` | Uploads: Azure Blob Storage, lokaal een map op schijf |
 | `src/auth.ts` | Inloggen met Entra ID (en de lokale testlogin) |

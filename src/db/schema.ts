@@ -27,6 +27,9 @@ const tsvector = customType<{ data: string }>({
 /** Rechtenniveaus, van laag naar hoog. Volgorde staat ook in src/lib/permissions.ts. */
 export const accessLevel = pgEnum("access_level", ["read", "comment", "edit", "full"]);
 
+/** Gewone pagina, database (met rijen) of rij in een database. */
+export const pageKind = pgEnum("page_kind", ["page", "database", "row"]);
+
 /** Privé-ruimte (één per persoon) of teamruimte (bijvoorbeeld "Stagiairs" of de Social Media Hub). */
 export const spaceKind = pgEnum("space_kind", ["private", "team"]);
 
@@ -42,6 +45,8 @@ export const users = pgTable(
     active: boolean("active").notNull().default(true),
     /** Moment waarop iemand de privacymelding (beheerders kunnen alles inzien) heeft gezien. */
     privacyAcceptedAt: timestamp("privacy_accepted_at", { withTimezone: true }),
+    /** De persoonlijke To Do-database (R36), aangemaakt met de stagiair-werkplek (R10). */
+    todoPageId: uuid("todo_page_id"),
     lastLoginAt: timestamp("last_login_at", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
@@ -79,8 +84,15 @@ export const pages = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     spaceId: uuid("space_id").notNull().references(() => spaces.id),
     parentId: uuid("parent_id").references((): AnyPgColumn => pages.id),
+    kind: pageKind("kind").notNull().default("page"),
+    /** Alleen bij databases: velden en weergaven (zie src/lib/db-model.ts). */
+    dbSchema: jsonb("db_schema"),
+    /** Alleen bij rijen: waarden per veld-id. */
+    props: jsonb("props"),
     title: text("title").notNull().default(""),
     icon: text("icon"),
+    /** Pagina over de volle breedte van het scherm, zoals in Notion. */
+    fullWidth: boolean("full_width").notNull().default(false),
     /** Volgorde tussen broertjes en zusjes. */
     position: doublePrecision("position").notNull().default(0),
     /** Losse kenmerken, zoals { type: "welcome" } voor de welkomstpagina die nog gevuld moet worden. */

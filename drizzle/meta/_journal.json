@@ -15,6 +15,20 @@
       "when": 1795706457351,
       "tag": "0001_editor",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1795707297254,
+      "tag": "0002_databases",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1795708172249,
+      "tag": "0003_full_width",
+      "breakpoints": true
     }
   ]
 }

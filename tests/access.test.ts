@@ -126,8 +126,9 @@ describe("teamruimtes, verplaatsen (R52) en overdragen (R81)", () => {
     await createPage(vertrekker, { parentId: p1.id, title: "Week 1" });
     const team = await createTeamSpace(beheerder, `Archief ${stamp}`);
 
+    const [{ before }] = await db.execute<{ before: number }>(sql`select count(*)::int as before from pages where space_id = ${sp}`);
     const result = await transferWork(beheerder, { fromUserId: vertrekker.id, toSpaceId: team.id, deactivate: true });
-    expect(result.count).toBe(3); // welkomstpagina + 2
+    expect(result.count).toBe(before); // alles: welkomstpagina, werkplek en de twee eigen pagina's
     const [container] = await db.select().from(pages).where(eq(pages.id, result.containerId));
     expect(container).toMatchObject({ title: "Werk van Vertrekker", spaceId: team.id });
     const [moved] = await db.select().from(pages).where(eq(pages.id, p1.id));

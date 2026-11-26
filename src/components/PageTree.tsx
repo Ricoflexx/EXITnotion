@@ -10,6 +10,7 @@ export interface TreeItem {
   title: string;
   icon: string | null;
   parentId: string | null;
+  kind?: string;
 }
 
 const STORAGE_KEY = "exitnotion:open";
@@ -88,7 +89,7 @@ export function PageTree({ items, canAdd }: { items: TreeItem[]; canAdd: boolean
                   {isOpen ? "▾" : "▸"}
                 </button>
                 <Link href={`/p/${item.id}`} className="side-link" aria-current={item.id === activeId ? "page" : undefined}>
-                  {item.icon ? `${item.icon} ` : ""}
+                  {item.icon ? `${item.icon} ` : item.kind === "database" ? "▦ " : ""}
                   {item.title || "Naamloos"}
                 </Link>
                 {canAdd && (

@@ -91,8 +91,16 @@ export async function pullDoc(user: CurrentUser, pageId: string, stateVectorB64:
   return { update, others };
 }
 
-/** Haalt de markering "welkomstpagina nog vullen" weg, nadat de browser de welkomsttekst heeft geplaatst. */
-export async function clearWelcomeFlag(user: CurrentUser, pageId: string) {
+/**
+ * Sjabloonpagina's (welkom, werkplek, notulen, logboek, tips) krijgen hun blokken in de browser bij de eerste keer
+ * openen, met de editor zelf. Daarna wordt de markering weggehaald.
+ */
+export async function setTemplate(user: CurrentUser, pageId: string, template: string, refs: Record<string, string> = {}) {
+  await requirePageLevel(user, pageId, can.edit);
+  await db.update(pages).set({ content: { template, refs } }).where(eq(pages.id, pageId));
+}
+
+export async function clearTemplateFlag(user: CurrentUser, pageId: string) {
   await requirePageLevel(user, pageId, can.edit);
   await db.update(pages).set({ content: null }).where(eq(pages.id, pageId));
 }

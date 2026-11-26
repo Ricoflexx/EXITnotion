@@ -17,6 +17,7 @@ export async function Sidebar({ user }: { user: CurrentUser }) {
       <Link href="/zoeken" className="side-link search-link">
         Zoeken <kbd>Ctrl K</kbd>
       </Link>
+      <Link href="/taken" className="side-link">✓ Mijn taken</Link>
 
       {data.favorites.length > 0 && (
         <section className="side-section">
