@@ -76,6 +76,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
 .tag{font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:1px 8px;border-radius:4px;background:var(--sunk);color:var(--muted)}
 .tag.liv{background:var(--blue-soft);color:var(--s)}
+.tag.nieuw{background:var(--orange);color:#1b1205}
 .tag.sug{border:1px solid currentColor;background:transparent}
 .tag.sug.M{color:var(--m)} .tag.sug.S{color:var(--s)} .tag.sug.C{color:var(--c)} .tag.sug.W{color:var(--w)}
 .pick{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
@@ -106,13 +107,13 @@ footer .pay{font-family:var(--display);color:var(--green-ink);font-size:22px;let
 
 <header class="hero">
   <div class="wrap">
-    <div class="eyebrow">EXITnotion · stap 2 van 5</div>
+    <div class="eyebrow">EXITnotion · stap 3 van 5</div>
     <h1>Wat moet ons eigen Notion kunnen?</h1>
-    <p class="lead">We bouwen een eigen werkplek in de stijl van Notion voor de stagiairs van EXIT Toys. Hij komt op de Azure-server en je logt in met je eigen EXIT-account. Hieronder staat wat we over Notion hebben uitgezocht en wat we daarvan willen overnemen. Geef per eis aan hoe belangrijk die voor jou is.</p>
+    <p class="lead">We bouwen een eigen werkplek in de stijl van Notion voor de stagiairs van EXIT Toys. Hij komt op de Azure-server en je logt in met je eigen EXIT-account. De beoordeling is klaar: hieronder staat de uitkomst, het aangepaste plan en wat we in stap 4 kritisch moeten bekijken.</p>
     <ul class="steps" aria-label="Stappenplan">
       <li class="done">1. Onderzoek</li>
-      <li class="now">2. Beoordelen met stagiairs</li>
-      <li>3. Plan aanpassen</li>
+      <li class="done">2. Beoordelen met stagiairs</li>
+      <li class="now">3. Plan aanpassen</li>
       <li>4. Kritisch naar het plan kijken</li>
       <li>5. Bouwen</li>
     </ul>
@@ -121,15 +122,71 @@ footer .pay{font-family:var(--display);color:var(--green-ink);font-size:22px;let
 
 <main class="wrap">
 
+<h2>Uitkomst van de beoordeling</h2>
+<div class="grid2">
+  <div class="box"><h3>47 van 58 eisen: Moet</h3><p>4 Zou moeten, 4 Kan en 3 Niet nu. Bij 25 eisen wijkt de keuze af van ons voorstel, bijna altijd naar een hogere prioriteit.</p></div>
+  <div class="box"><h3>Route A: zelf bouwen</h3><p>"We willen de controle behouden. We kunnen alles zelf, dus doen alles zelf." De keuze voor zelf bouwen staat daarmee vast als uitgangspunt voor stap 4.</p></div>
+</div>
+
+<h3>Wat er veranderde ten opzichte van ons voorstel</h3>
+<div class="tablewrap"><table>
+<thead><tr><th>Richting</th><th>Eisen</th></tr></thead>
+<tbody>
+<tr><td>Omhoog naar Moet</td><td>Sneltoetsen (R22), blokken verslepen (R23), embeds (R27), @-verwijzingen (R28), filteren en groeperen (R34), Mijn taken (R35), dagelijkse To Do (R36), actiepunten worden taken (R41), logboek per dag (R42), notulenoverzicht (R43), ideeënbord (R50), opmerkingen (R60), tegelijk bewerken (R61), versiegeschiedenis (R62), meldingen (R64), favorieten en recent (R71), archief (R73), import uit Notion (R84), snelheid (R86), EXIT-huisstijl (R89)</td></tr>
+<tr><td>Omhoog, maar geen Moet</td><td>Whiteboard of vrij canvas (R53: Niet nu → Zou moeten), offline werken (R88: Niet nu → Zou moeten), formules en relaties (R38: Niet nu → Kan)</td></tr>
+<tr><td>Omlaag</td><td>Werkt op je telefoon (R87: Zou moeten → Niet nu), koppeling met Outlook (R44: Kan → Niet nu)</td></tr>
+</tbody></table></div>
+
+<h3>Wat de opmerkingen toevoegen</h3>
+<ul class="plain">
+  <li><b>Box (bij R25).</b> "Wij gebruiken dat constant." Daarom is er een nieuwe eis R90 bijgekomen: Box-bestanden koppelen.</li>
+  <li><b>Social media-links (bij R27).</b> Een Instagram-, TikTok- of YouTube-link moet een voorbeeld tonen, maar het is geen ramp als dat niet lukt. YouTube en TikTok kunnen dat met een openbare koppeling. Voor Instagram is een Meta-app nodig, dus dat kan op een linkkaartje uitkomen.</li>
+  <li><b>TickTick als voorbeeld (bij R36).</b> De dagelijkse To Do moet werken zoals TickTick: simpel, maar krachtig. In TickTick zagen we lijsten per onderwerp in mappen, een bord met een kolom "Vandaag", prioriteiten, start- en einddatums en slimme lijsten zoals Vandaag en Volgende 7 dagen. Daarom zijn er twee nieuwe eisen: R91 snelle invoer en R92 prioriteit, herhalen en herinneringen.</li>
+  <li><b>PureRef als voorbeeld (bij R51).</b> Een moodboard als vrij vlak waarop je afbeeldingen sleept, plakt, schaalt en neerzet. Dat sluit aan bij R53 (vrij canvas), die omhoog is gegaan naar Zou moeten.</li>
+</ul>
+
+<h3>Wat de antwoorden zeggen</h3>
+<ul class="plain">
+  <li><b>Gebruik:</b> vooral plannen en notuleren. Diepgaande functies worden nooit gebruikt.</li>
+  <li><b>Ergernis:</b> Notion voelt complex omdat de zware functies de app lastig maken. Die zware functies hebben we niet nodig.</li>
+  <li><b>Andere tools:</b> Monday, Box, Word en Teams, "omdat hier de rest van het bedrijf mee werkt".</li>
+  <li><b>Wat je zou missen:</b> geen idee.</li>
+</ul>
+
+<h2>Aangepast plan</h2>
+<p>Bijna alles is Moet, dus de volgorde van bouwen bepalen we niet met de prioriteit. We bouwen in fases waarbij elke fase op de vorige voortbouwt. Na fase 2 is er een eerste versie die de stagiairs echt kunnen gebruiken.</p>
+<div class="tablewrap"><table>
+<thead><tr><th>Fase</th><th>Wat</th><th>Eisen</th></tr></thead>
+<tbody>
+<tr><td><b>0. Fundament</b></td><td>Azure-omgeving, inloggen met EXIT-account, rechten, beheerders-inzage, back-ups</td><td>R01–R04, R80, R82, R85</td></tr>
+<tr><td><b>1. Schrijven</b></td><td>Editor met blokken, /-menu, sneltoetsen, slepen, tabellen, kolommen, uitklapblokken, uploads, @-verwijzingen, automatisch opslaan, zoeken, prullenbak, favorieten</td><td>R11, R13, R20–R25, R28, R29, R63, R70, R71, R86</td></tr>
+<tr><td><b>2. Plannen</b></td><td>Databases met eigen velden en statussen, tabel, bord en kalender, filteren en groeperen, Mijn taken, een dagelijkse To Do in TickTick-stijl, en de ingerichte stagiair-werkplek</td><td>R10, R12, R30–R36, R72, R91, R92</td></tr>
+<tr><td><b>3. Samenwerken</b></td><td>Teamruimtes, opmerkingen, meldingen, versiegeschiedenis, live samen bewerken, overdragen bij vertrek</td><td>R05, R60–R62, R64, R81</td></tr>
+<tr><td><b>4. Notuleren en ideeën</b></td><td>Notulensjabloon met actiepunten die taken worden, logboek per dag, ideeënbord, pagina's verplaatsen, archief, embeds en Box</td><td>R40–R43, R50, R52, R73, R26, R27, R90</td></tr>
+<tr><td><b>5. Overstap en extra's</b></td><td>Import uit Notion, export, huisstijl afmaken, en daarna Zou moeten: vrij canvas en offline</td><td>R84, R83, R89, R53, R88</td></tr>
+</tbody></table></div>
+<p class="src">Technisch voorstel voor route A, nog te toetsen in stap 4: een webapp in TypeScript met BlockNote als editor (gebouwd op Tiptap/ProseMirror), Yjs voor live samen bewerken, PostgreSQL voor de gegevens, Azure Blob Storage voor bestanden en Microsoft Entra ID voor het inloggen.</p>
+
+<h2>Voor stap 4: kritisch bekijken</h2>
+<ul class="plain">
+  <li><b>Als alles Moet is, is niets Moet.</b> 47 Moet-eisen is een groot pakket om zelf te bouwen. We moeten bepalen wat er écht in de eerste versie zit, bijvoorbeeld alleen fase 0 tot en met 2.</li>
+  <li><b>Eén set antwoorden.</b> Er is één beoordeling opgeslagen, in de wij-vorm. Klopt het dat jullie die samen hebben ingevuld? Anders missen we de mening van een van de stagiairs.</li>
+  <li><b>Nóg een tool naast Monday, Box, Word en Teams.</b> De rest van het bedrijf werkt daarin. We moeten afspreken wat waar hoort, bijvoorbeeld: teamprojecten blijven in Monday, bestanden in Box, en EXITnotion is je persoonlijke werkplek voor plannen, notuleren en ideeën.</li>
+  <li><b>De zwaarste onderdelen.</b> Live samen bewerken (R61), offline (R88) en een vrij canvas (R53) kosten het meeste bouwtijd. Offline staat op Zou moeten terwijl de telefoon op Niet nu staat. Dat moeten we nog eens bekijken.</li>
+  <li><b>Onderhoud.</b> Bij route A onderhouden we het zelf, ook na de stage. Wie doet dat, en hoeveel tijd kost het?</li>
+  <li><b>Privacy.</b> Beheerders zien alles. Dat moet duidelijk zijn voor iedereen die het gebruikt, en wachtwoorden horen er niet in.</li>
+  <li><b>Wat je zou missen: "geen idee".</b> Dat is een signaal om een paar weken met het prototype te testen op Liv's werkplek voordat we verder uitbreiden.</li>
+</ul>
+
 <h2>Zo beoordeel je</h2>
-<p>Kies bij elke eis één van de vier knoppen. Twijfel je, kies dan wat je zelf het vaakst zou gebruiken. Zet een opmerking erbij als je iets mist of anders wilt. Je keuzes worden vanzelf opgeslagen en de anderen zien ze ook.</p>
+<p>De beoordeling is afgerond. Bij elke eis zie je nu de besloten prioriteit. De nieuwe eisen R90 tot en met R92 kun je nog beoordelen: filter op "Nieuw".</p>
 <div class="legend">
   <span><span class="dot M"></span><b>Moet</b>: zonder dit gebruik ik het niet</span>
   <span><span class="dot S"></span><b>Zou moeten</b>: belangrijk, maar het kan later</span>
   <span><span class="dot C"></span><b>Kan</b>: leuk om te hebben</span>
   <span><span class="dot W"></span><b>Niet nu</b>: hoeft niet in de eerste versie</span>
 </div>
-<p class="src">Bij elke eis staat een voorstel van ons (omrande label). Dat voorstel telt niet mee als stem.</p>
+<p class="src">Het omrande label toont de besloten prioriteit. Waar die afwijkt van ons voorstel, staat het voorstel erachter.</p>
 
 <h2>Hoe Notion werkt</h2>
 <p>Notion bestaat uit maar een paar bouwstenen. Je kunt ze eindeloos combineren, en daardoor voelt het soms groot en ingewikkeld.</p>
@@ -190,6 +247,8 @@ footer .pay{font-family:var(--display);color:var(--green-ink);font-size:22px;let
     <button class="chip" type="button" data-f="all" aria-pressed="true">Alles</button>
     <button class="chip" type="button" data-f="open" aria-pressed="false">Nog niet beoordeeld</button>
     <button class="chip" type="button" data-f="split" aria-pressed="false">Verschil van mening</button>
+    <button class="chip" type="button" data-f="new" aria-pressed="false">Nieuw</button>
+    <button class="chip" type="button" data-f="changed" aria-pressed="false">Gewijzigd</button>
   </div>
   <span class="progress" id="progress">0 van 0 beoordeeld</span>
   <span class="status" id="status" aria-live="polite">Verbinden…</span>
@@ -247,7 +306,7 @@ const REQS = [
   ["R24","editor","Simpele tabellen","Een losse tabel in de tekst, zoals de draaidagen en posts per week in de contentplanning.","M","liv"],
   ["R25","editor","Afbeeldingen en bestanden","Afbeeldingen en bestanden (pdf, docx) in de pagina slepen of plakken.","M","liv"],
   ["R26","editor","Mooie linkkaartjes","Plak je een link, dan krijg je een kaartje met titel en plaatje. Handig voor inspiratie en concurrenten.","S","onderzoek"],
-  ["R27","editor","Embeds","YouTube, Figma, Canva of een Google-document laten zien in de pagina.","C","onderzoek"],
+  ["R27","editor","Embeds","YouTube, TikTok, Instagram, Figma of Canva laten zien in de pagina. Lukt een voorbeeld niet (zoals bij Instagram), dan wordt het een linkkaartje.","C","onderzoek"],
   ["R28","editor","Verwijzen naar pagina's en mensen","Met @ link je naar een andere pagina of noem je een collega.","S","liv"],
   ["R29","editor","Automatisch opslaan","Je hoeft nooit op opslaan te drukken.","M","onderzoek"],
 
@@ -257,7 +316,7 @@ const REQS = [
   ["R33","planning","Bordweergave (kanban)","Kaartjes in kolommen per status die je versleept.","M","liv"],
   ["R34","planning","Tabel met filteren, sorteren en groeperen","Bijvoorbeeld \"Per type\" of \"alleen deze week\", zoals in de Social Media Hub.","S","liv"],
   ["R35","planning","Mijn taken","Eén overzicht met al jouw taken uit alle pagina's en gedeelde ruimtes.","S","onderzoek"],
-  ["R36","planning","Dagelijkse To Do","Een snelle checklist voor vandaag. Wat niet af is schuif je door naar morgen.","S","liv"],
+  ["R36","planning","Dagelijkse To Do (zoals TickTick)","Slimme lijsten Vandaag, Morgen en Volgende 7 dagen, lijsten per onderwerp in mappen en een bordweergave met een kolom Vandaag. Wat niet af is schuif je met één klik door.","S","liv"],
   ["R37","planning","Tijdlijn en grafieken","Een tijdlijnweergave en simpele grafieken, zoals bij Afgeronde projecten.","C","liv"],
   ["R38","planning","Formules, relaties en rollups","Geavanceerde databasefuncties die rekenen of databases aan elkaar koppelen.","W","onderzoek"],
 
@@ -268,7 +327,7 @@ const REQS = [
   ["R44","notulen","Koppeling met de Outlook-agenda","Notulen starten vanuit een afspraak in Outlook.","C","onderzoek"],
 
   ["R50","ideeen","Ideeënbord","Ideeën als kaartjes die doorschuiven van idee naar concept naar uitgewerkt.","S","liv"],
-  ["R51","ideeen","Galerijweergave / moodboard","Kaartjes met een grote afbeelding, voor moodboards en concepten.","C","liv"],
+  ["R51","ideeen","Galerijweergave / moodboard","Kaartjes met een grote afbeelding, voor moodboards en concepten. PureRef dient als voorbeeld.","C","liv"],
   ["R52","ideeen","Pagina verplaatsen naar een gedeelde ruimte","Een idee begint privé en verhuist later naar de teamruimte, zoals de contentplanning naar de Social Media Hub.","M","liv"],
   ["R53","ideeen","Whiteboard / vrij canvas","Vrij tekenen en blokken neerzetten zoals in Miro of FigJam.","W","onderzoek"],
 
@@ -292,7 +351,10 @@ const REQS = [
   ["R86","beheer","Snel","Een pagina staat binnen ongeveer een seconde op je scherm, ook als hij lang is.","S","onderzoek"],
   ["R87","beheer","Werkt op je telefoon","Op je telefoon lezen en kleine dingen aanpassen. Op de laptop werk je volledig.","S","onderzoek"],
   ["R88","beheer","Offline werken","Werken zonder internet en later synchroniseren.","W","onderzoek"],
-  ["R89","beheer","EXIT-huisstijl","Het EXIT-logo en de EXIT-kleuren in de app, rustig toegepast.","C","eis"]
+  ["R89","beheer","EXIT-huisstijl","Het EXIT-logo en de EXIT-kleuren in de app, rustig toegepast.","C","eis"],
+  ["R90","editor","Box-bestanden koppelen","Een Box-link plakken en een voorbeeld van het bestand zien, of een bestand uit Box kiezen. Het bestand blijft in Box staan.","M","nieuw"],
+  ["R91","planning","Snelle taakinvoer","Typ \"Post Pico inplannen morgen 10:00 !hoog #instagram\" en de datum, prioriteit en tag worden er vanzelf uitgehaald, net als in TickTick.","S","nieuw"],
+  ["R92","planning","Prioriteit, herhalen en herinneringen","Taken krijgen een prioriteit (geen, laag, middel of hoog), kunnen terugkomen (bijvoorbeeld elke maandag de weekcheck) en sturen een herinnering.","S","nieuw"]
 ].map(([id,cat,title,desc,sug,src])=>({id,cat,title,desc,sug,src}));
 
 const QUESTIONS = [
@@ -303,8 +365,9 @@ const QUESTIONS = [
   ["Q5","Route A (zelf bouwen) of route B (bestaand pakket): heb je een voorkeur, en waarom?"]
 ];
 
+const FINAL = {"R01": "M", "R02": "M", "R03": "M", "R04": "M", "R05": "M", "R06": "W", "R10": "M", "R11": "M", "R12": "M", "R13": "M", "R14": "C", "R20": "M", "R21": "M", "R22": "M", "R23": "M", "R24": "M", "R25": "M", "R26": "S", "R27": "M", "R28": "M", "R29": "M", "R30": "M", "R31": "M", "R32": "M", "R33": "M", "R34": "M", "R35": "M", "R36": "M", "R37": "C", "R38": "C", "R40": "M", "R41": "M", "R42": "M", "R43": "M", "R44": "W", "R50": "M", "R51": "C", "R52": "M", "R53": "S", "R60": "M", "R61": "M", "R62": "M", "R63": "M", "R64": "M", "R70": "M", "R71": "M", "R72": "M", "R73": "M", "R80": "M", "R81": "M", "R82": "M", "R83": "S", "R84": "M", "R85": "M", "R86": "M", "R87": "W", "R88": "S", "R89": "M"}; // uitkomst beoordeling 26-11-2026
 const PRIO = {M:"Moet",S:"Zou moeten",C:"Kan",W:"Niet nu"};
-const SRC = {liv:"Gezien bij Liv",onderzoek:"Uit onderzoek",eis:"Eis van EXIT"};
+const SRC = {liv:"Gezien bij Liv",onderzoek:"Uit onderzoek",eis:"Eis van EXIT",nieuw:"Nieuw na beoordeling"};
 
 let mine = {r:{}, q:{}};   // eigen keuzes
 let others = {};           // userId -> {r,q}
@@ -331,6 +394,8 @@ function renderReqs(){
     const items=REQS.filter(r=>r.cat===ck).filter(r=>{
       if(filter==="open") return !mine.r[r.id]?.p;
       if(filter==="split") return isSplit(r.id);
+      if(filter==="new") return r.src==="nieuw";
+      if(filter==="changed") return FINAL[r.id] && FINAL[r.id]!==r.sug;
       return true;
     });
     if(!items.length) continue;
@@ -339,7 +404,7 @@ function renderReqs(){
     for(const r of items){ sec.append(renderReq(r)); shown++; }
     root.append(sec);
   }
-  if(!shown) root.append(el("p",{class:"src",text: filter==="split" ? "Nog geen eisen waar jullie verschillend over denken." : "Je hebt alles beoordeeld. Top!"}));
+  if(!shown) root.append(el("p",{class:"src",text: filter==="split" ? "Geen eisen waar jullie verschillend over denken." : "Je hebt alles beoordeeld. Top!"}));
   updateProgress();
 }
 
@@ -350,8 +415,10 @@ function renderReq(r){
   body.append(el("div",{class:"rtitle",text:r.title}));
   body.append(el("p",{class:"rdesc",text:r.desc}));
   const tags=el("div",{class:"tags"});
-  tags.append(el("span",{class:"tag sug "+r.sug,text:"Voorstel: "+PRIO[r.sug]}));
-  tags.append(el("span",{class:"tag"+(r.src==="liv"?" liv":""),text:SRC[r.src]}));
+  const fin=FINAL[r.id];
+  if(fin) tags.append(el("span",{class:"tag sug "+fin,text:"Besloten: "+PRIO[fin]+(fin!==r.sug?" (voorstel was "+PRIO[r.sug]+")":"")}));
+  else tags.append(el("span",{class:"tag sug "+r.sug,text:"Voorstel: "+PRIO[r.sug]}));
+  tags.append(el("span",{class:"tag"+(r.src==="liv"?" liv":r.src==="nieuw"?" nieuw":""),text:SRC[r.src]}));
   body.append(tags);
 
   const cur=mine.r[r.id]||{};
