@@ -1,0 +1,518 @@
+<title>EXITnotion Eisenbeoordeling</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Changa+One&family=Rajdhani:wght@400;500;600;700&family=Mansalva&display=swap">
+<style>
+/* Layout: één leeskolom; bovenaan onderzoek, daaronder de interactieve eisenlijst per categorie met per eis een keuzestrook (Moet / Zou moeten / Kan / Niet nu). */
+:root{
+  --bg:#f6f9f1; --surface:#ffffff; --sunk:#edf3e4; --line:#d6e2c6;
+  --fg:#1b2413; --muted:#56624a;
+  --green:#78be20; --green-ink:#4f7414; --orange:#f68d2e; --orange-ink:#b35a0c; --blue:#9bcbeb; --blue-soft:#e3f1fa;
+  --m:#4f7414; --s:#2f7fb5; --c:#8a7a12; --w:#8a8f86;
+  --display:"Changa One","Arial Black",Arial,sans-serif;
+  --body:"Rajdhani","Segoe UI",Arial,sans-serif;
+  --hand:"Mansalva","Comic Sans MS",cursive;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#11160c; --surface:#192113; --sunk:#141b0f; --line:#2c3a20;
+  --fg:#e7eedd; --muted:#a3b094;
+  --green:#8fd13a; --green-ink:#a6dc5c; --orange:#f68d2e; --orange-ink:#ffaa5c; --blue:#9bcbeb; --blue-soft:#18303f;
+  --m:#a6dc5c; --s:#7cc0ee; --c:#e0cc5a; --w:#9aa094; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#11160c; --surface:#192113; --sunk:#141b0f; --line:#2c3a20;
+  --fg:#e7eedd; --muted:#a3b094;
+  --green:#8fd13a; --green-ink:#a6dc5c; --orange:#f68d2e; --orange-ink:#ffaa5c; --blue:#9bcbeb; --blue-soft:#18303f;
+  --m:#a6dc5c; --s:#7cc0ee; --c:#e0cc5a; --w:#9aa094; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:18px;line-height:1.5;font-weight:500}
+.wrap{max-width:920px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 64px}
+.hero{background:var(--blue-soft);margin-top:calc(-1 * env(safe-area-inset-top,0px));padding-top:calc(env(safe-area-inset-top,0px) + 40px);padding-bottom:32px;border-bottom:4px solid var(--green)}
+.hero .wrap{padding-block:0}
+.eyebrow{font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:14px;color:var(--green-ink)}
+h1,h2,h3{font-family:var(--display);font-weight:400;text-wrap:balance;line-height:1.1;margin:0}
+h1{font-size:clamp(34px,6vw,52px);text-transform:uppercase;margin-top:6px}
+h2{font-size:30px;text-transform:uppercase;margin:56px 0 14px}
+h3{font-size:21px;margin:28px 0 8px}
+p{margin:0 0 12px;max-width:68ch}
+.lead{font-size:20px;max-width:62ch;margin-top:14px}
+.hand{font-family:var(--hand);color:var(--orange-ink);font-size:22px}
+a{color:var(--green-ink)}
+:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+ul.plain{margin:0 0 12px;padding-left:20px}
+ul.plain li{margin:4px 0}
+.steps{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px;padding:0;list-style:none}
+.steps li{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px 14px;font-weight:600;font-size:16px}
+.steps li.now{background:var(--orange);border-color:var(--orange);color:#1b1205}
+.steps li.done{color:var(--muted);text-decoration:line-through}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.grid2>div{min-width:0}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+.box h3{margin-top:0}
+.note{background:var(--sunk);border-left:4px solid var(--orange);padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0}
+.note.blue{border-left-color:var(--blue)}
+.tablewrap{overflow-x:auto;margin:12px 0}
+table{border-collapse:collapse;width:100%;font-size:16px;min-width:560px}
+th,td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--line)}
+th{font-weight:700;color:var(--muted);font-size:14px;text-transform:uppercase;letter-spacing:.05em}
+.src{font-size:14px;color:var(--muted)}
+.src a{color:var(--muted)}
+
+/* Eisenlijst */
+.toolbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding:10px 0;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:inherit;font-size:15px;font-weight:600;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;padding:3px 12px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.status{font-size:15px;color:var(--muted);margin-left:auto}
+.progress{font-weight:700;font-variant-numeric:tabular-nums}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:15px;color:var(--muted);margin:10px 0 4px}
+.legend b{font-weight:700}
+.cat h3{display:flex;align-items:baseline;gap:10px;margin-top:36px}
+.cat h3 small{font-family:var(--body);font-size:15px;color:var(--muted);font-weight:600}
+.req{display:grid;grid-template-columns:64px 1fr;gap:4px 14px;padding:14px 0;border-bottom:1px solid var(--line)}
+.req>*{min-width:0}
+.rid{font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums;padding-top:2px}
+.rtitle{font-weight:700;font-size:19px;line-height:1.3}
+.rdesc{color:var(--muted);font-size:16.5px;margin:2px 0 8px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.tag{font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:1px 8px;border-radius:4px;background:var(--sunk);color:var(--muted)}
+.tag.liv{background:var(--blue-soft);color:var(--s)}
+.tag.sug{border:1px solid currentColor;background:transparent}
+.tag.sug.M{color:var(--m)} .tag.sug.S{color:var(--s)} .tag.sug.C{color:var(--c)} .tag.sug.W{color:var(--w)}
+.pick{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.pbtn{font:inherit;font-size:15px;font-weight:700;border:1.5px solid var(--line);background:var(--surface);color:var(--fg);border-radius:6px;padding:4px 10px;cursor:pointer;min-height:34px}
+.pbtn:hover{border-color:var(--muted)}
+.pbtn[aria-pressed="true"].M{background:var(--m);border-color:var(--m);color:var(--bg)}
+.pbtn[aria-pressed="true"].S{background:var(--s);border-color:var(--s);color:var(--bg)}
+.pbtn[aria-pressed="true"].C{background:var(--c);border-color:var(--c);color:var(--bg)}
+.pbtn[aria-pressed="true"].W{background:var(--w);border-color:var(--w);color:var(--bg)}
+.pbtn:disabled{opacity:.5;cursor:default}
+.linkbtn{font:inherit;font-size:15px;font-weight:600;background:none;border:0;color:var(--green-ink);cursor:pointer;padding:4px 2px;text-decoration:underline}
+textarea{width:100%;box-sizing:border-box;font:inherit;font-size:16px;font-weight:500;background:var(--surface);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:8px 10px;margin-top:8px;resize:vertical;min-height:60px}
+.team{margin-top:8px;font-size:15px;color:var(--muted)}
+.team .who{font-weight:700;color:var(--fg)}
+.team ul{list-style:none;padding:0;margin:4px 0 0}
+.team li{margin:2px 0}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:4px;vertical-align:baseline}
+.dot.M{background:var(--m)}.dot.S{background:var(--s)}.dot.C{background:var(--c)}.dot.W{background:var(--w)}
+.split{color:var(--orange-ink);font-weight:700}
+.q{margin:18px 0}
+.q label{font-weight:700;display:block}
+.q .others{font-size:15px;color:var(--muted);margin-top:6px}
+footer{margin-top:56px;text-align:center;color:var(--muted);font-size:15px}
+footer .pay{font-family:var(--display);color:var(--green-ink);font-size:22px;letter-spacing:.02em}
+@media (max-width:520px){.req{grid-template-columns:1fr}.rid{padding:0}.status{margin-left:0;width:100%}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">EXITnotion · stap 2 van 5</div>
+    <h1>Wat moet ons eigen Notion kunnen?</h1>
+    <p class="lead">We bouwen een eigen werkplek in de stijl van Notion voor de stagiairs van EXIT Toys. Hij komt op de Azure-server en je logt in met je eigen EXIT-account. Hieronder staat wat we over Notion hebben uitgezocht en wat we daarvan willen overnemen. Geef per eis aan hoe belangrijk die voor jou is.</p>
+    <ul class="steps" aria-label="Stappenplan">
+      <li class="done">1. Onderzoek</li>
+      <li class="now">2. Beoordelen met stagiairs</li>
+      <li>3. Plan aanpassen</li>
+      <li>4. Kritisch naar het plan kijken</li>
+      <li>5. Bouwen</li>
+    </ul>
+  </div>
+</header>
+
+<main class="wrap">
+
+<h2>Zo beoordeel je</h2>
+<p>Kies bij elke eis één van de vier knoppen. Twijfel je, kies dan wat je zelf het vaakst zou gebruiken. Zet een opmerking erbij als je iets mist of anders wilt. Je keuzes worden vanzelf opgeslagen en de anderen zien ze ook.</p>
+<div class="legend">
+  <span><span class="dot M"></span><b>Moet</b>: zonder dit gebruik ik het niet</span>
+  <span><span class="dot S"></span><b>Zou moeten</b>: belangrijk, maar het kan later</span>
+  <span><span class="dot C"></span><b>Kan</b>: leuk om te hebben</span>
+  <span><span class="dot W"></span><b>Niet nu</b>: hoeft niet in de eerste versie</span>
+</div>
+<p class="src">Bij elke eis staat een voorstel van ons (omrande label). Dat voorstel telt niet mee als stem.</p>
+
+<h2>Hoe Notion werkt</h2>
+<p>Notion bestaat uit maar een paar bouwstenen. Je kunt ze eindeloos combineren, en daardoor voelt het soms groot en ingewikkeld.</p>
+<div class="grid2">
+  <div class="box"><h3>Blokken</h3><p>Alles op een pagina is een blok: tekst, kopje, lijst, checklist, afbeelding, uitklapblok (toggle), tabel. Met <b>/</b> kies je een bloktype en blokken versleep je met het handvat.</p></div>
+  <div class="box"><h3>Pagina's in pagina's</h3><p>Elke pagina kan subpagina's hebben. Zo ontstaat links in de zijbalk een boom met een privé-deel, een gedeeld deel en teamruimtes.</p></div>
+  <div class="box"><h3>Databases</h3><p>Een database is een lijst pagina's met vaste velden, zoals status, datum, tags en eigenaar. Dezelfde lijst kun je bekijken als tabel, bord, kalender, tijdlijn of galerij.</p></div>
+  <div class="box"><h3>Delen en rechten</h3><p>Elke pagina heeft rechten: volledige toegang, bewerken, reageren of alleen lezen. Subpagina's erven die rechten. Teamruimtes delen een hele groep pagina's in één keer.</p></div>
+  <div class="box"><h3>Sjablonen</h3><p>Een kant-en-klare pagina of database die je dupliceert, bijvoorbeeld vergadernotulen of een takenbord. Nieuwe gebruikers beginnen bijna altijd vanuit een sjabloon.</p></div>
+  <div class="box"><h3>Samenwerken</h3><p>Je bewerkt live samen, plaatst opmerkingen bij tekst, noemt iemand met <b>@</b>, bekijkt de versiegeschiedenis en haalt iets terug uit de prullenbak.</p></div>
+</div>
+
+<h3>Wat basisgebruikers fijn vinden</h3>
+<ul class="plain">
+  <li><b>Alles op één plek.</b> Notities, taken, links en bestanden staan bij elkaar, zodat je niet tussen apps hoeft te wisselen.</li>
+  <li><b>Sjablonen.</b> Met een goed sjabloon kun je meteen aan de slag zonder eerst zelf iets op te zetten.</li>
+  <li><b>Snel en netjes schrijven.</b> Het /-menu en sneltoetsen zoals <b>#</b> voor een kopje en <b>[]</b> voor een checkbox maken een pagina snel netjes.</li>
+  <li><b>Eén lijst, meerdere weergaven.</b> Dezelfde taken kun je als bord en als kalender bekijken.</li>
+  <li><b>Makkelijk delen.</b> Collega's krijgen met één klik toegang.</li>
+</ul>
+<h3>Waar ze op vastlopen</h3>
+<ul class="plain">
+  <li><b>Leercurve.</b> Een leeg canvas met veel opties is overweldigend. Veel mensen gebruiken maar een klein deel van de functies.</li>
+  <li><b>Ingewikkelde databases.</b> Relaties, rollups en formules zijn lastig op te zetten.</li>
+  <li><b>Traag bij grote pagina's.</b> Zware databases en lange pagina's laden langzaam, en de mobiele app voelt traag.</li>
+  <li><b>Geen echte offline modus.</b></li>
+</ul>
+<div class="note"><b>Wat dit voor ons betekent:</b> we bouwen alleen de basis, maar die moet goed en snel werken. Iedere stagiair begint met een ingerichte werkplek in plaats van een lege pagina. Ingewikkelde database-functies laten we weg.</div>
+<p class="src">Bronnen: <a href="https://www.capterra.com/p/186596/notion/" target="_blank" rel="noopener">Capterra</a>, <a href="https://www.g2.com/products/notion/reviews" target="_blank" rel="noopener">G2</a>, <a href="https://uxplanet.org/why-i-stopped-using-notion-an-honest-ux-review-ebf03e268a01" target="_blank" rel="noopener">UX Planet</a>, <a href="https://www.notion.com/blog/meeting-notes-template" target="_blank" rel="noopener">Notion: meeting notes</a>. Dit zijn reviews en blogs, geen gebruiksstatistieken. Lees ze als richting, niet als harde cijfers.</p>
+
+<h2>Wat we zagen bij Liv</h2>
+<p>Liv heeft in Notion veel met planning gedaan. Haar werkplek laat goed zien wat een stagiair echt gebruikt:</p>
+<div class="tablewrap"><table>
+<thead><tr><th>Wat</th><th>Hoe ze het gebruikt</th><th>Wat wij nodig hebben</th></tr></thead>
+<tbody>
+<tr><td>Startpagina</td><td>Twee kolommen. Links een To Do, uitklapblokken met links naar notities, tools, tips en documenten, en een blok met mijlpalen. Rechts de kalender met taken en een contactenlijst.</td><td>Kolommen, uitklapblokken, een database midden op een pagina</td></tr>
+<tr><td>Kalender en taken</td><td>Weekweergave zonder weekend. Status: Niet gestart, In progress, <i>Vastgelopen</i>, <i>Feedback afwachten</i>, Completed.</td><td>Kalender met weekweergave en een eigen statuslijst</td></tr>
+<tr><td>Logboek</td><td>Eén lange pagina met per dag een datum en een lijstje wat ze heeft gedaan. Wordt ook gebruikt voor school.</td><td>Een snelle manier om per dag iets te noteren</td></tr>
+<tr><td>Planning (opdrachten)</td><td>Een lijst ideeën en taken waarin ze afvinkt met het ✅-emoji in plaats van een checkbox.</td><td>Een regel makkelijk omzetten naar een checkbox of taak</td></tr>
+<tr><td>Contentplanning</td><td>Lange pagina met thema's per maand, tabellen voor draaidagen en posts per week. Groeide uit tot de gedeelde <i>Social Media Hub</i>.</td><td>Simpele tabellen en kopjes, en een pagina naar een gedeelde ruimte kunnen verplaatsen</td></tr>
+<tr><td>Social Media Hub</td><td>Gedeeld met Nikki. Een contentkalender met de weergaven Kalender, Alles, Per type (gegroepeerd) en Per status (bord). Velden: platform, status, thema en type, met gekleurde labels. Plus een archiefpagina.</td><td>Gedeelde databases met meerdere weergaven, groeperen en gekleurde labels</td></tr>
+<tr><td>Afgeronde projecten</td><td>Reflectie per project: hoe voelde het, wat heb je geleerd, zelfvertrouwen (1-5). Met een tijdlijn en grafieken.</td><td>Velden die je zelf kiest. Tijdlijn en grafieken zijn extra.</td></tr>
+<tr><td>Stagesjabloon</td><td>Haar werkplek is gemaakt vanuit het sjabloon "Template logboek en workspace", met tips over plannen en notuleren.</td><td>Een vaste stagiair-werkplek die voor elke nieuwe stagiair klaarstaat</td></tr>
+</tbody></table></div>
+<div class="note"><b>Aandachtspunt:</b> in de notities bestaat een categorie "inloggegevens". In de nieuwe omgeving kunnen beheerders alles zien, dus wachtwoorden horen daar niet in. Die gaan naar een wachtwoordmanager. We nemen dat op in de spelregels.</div>
+
+<h2>Eén keuze vooraf</h2>
+<p>Voordat we bouwen moeten we kiezen tussen twee routes. Die keuze maken we in stap 4. Jullie mening telt mee, zie de vragen onderaan.</p>
+<div class="grid2">
+  <div class="box"><h3>A. Zelf bouwen</h3><p>Een eigen app op Azure. Voor de editor en het live samenwerken gebruiken we bestaande open-source onderdelen, zodat we die niet zelf hoeven te maken. Wij bepalen wat erin zit: de stagiair-sjablonen, het beheerdersoverzicht en het inloggen met het EXIT-account.</p><p class="src">Voordeel: past precies. Nadeel: meer bouwtijd, en wij moeten het zelf onderhouden.</p></div>
+  <div class="box"><h3>B. Bestaand open-source pakket</h3><p>Een pakket als Docmost, AppFlowy of AFFiNE zelf hosten en aankleden. Docmost is vooral een wiki, AppFlowy heeft de meeste database-functies, en de zelf-gehoste versie van AFFiNE is nog jong.</p><p class="src">Voordeel: snel draaiend. Nadeel: minder controle. Of beheerders bij privé-pagina's kunnen en hoe het inloggen met EXIT werkt, moeten we per pakket nog nagaan.</p></div>
+</div>
+<p class="src">Bronnen: <a href="https://dev.to/selfhostingsh/affine-vs-appflowy-open-source-notion-clones-2mg4" target="_blank" rel="noopener">selfhosting.sh</a>, <a href="https://www.maketecheasier.com/best-open-source-notion-replacements/" target="_blank" rel="noopener">MakeTechEasier</a>, <a href="https://appflowy.com/compare/appflowy-vs-docmost" target="_blank" rel="noopener">AppFlowy (vergelijking van de maker zelf)</a>. Licenties en versies moeten we nog controleren in de officiële repositories.</p>
+
+<h2>De eisen</h2>
+<div class="toolbar" role="region" aria-label="Filters en voortgang">
+  <div class="chips" id="filters">
+    <button class="chip" type="button" data-f="all" aria-pressed="true">Alles</button>
+    <button class="chip" type="button" data-f="open" aria-pressed="false">Nog niet beoordeeld</button>
+    <button class="chip" type="button" data-f="split" aria-pressed="false">Verschil van mening</button>
+  </div>
+  <span class="progress" id="progress">0 van 0 beoordeeld</span>
+  <span class="status" id="status" aria-live="polite">Verbinden…</span>
+</div>
+<div id="reqlist"></div>
+
+<h2>Vragen aan de stagiairs</h2>
+<p>Een paar korte open vragen. Er zijn geen foute antwoorden.</p>
+<div id="questions"></div>
+
+<h2>Hoe het verder gaat</h2>
+<ul class="plain">
+  <li><b>Stap 3, plan aanpassen:</b> we tellen de keuzes, bespreken waar jullie het oneens zijn en maken er een definitieve eisenlijst van.</li>
+  <li><b>Stap 4, kritische blik:</b> we kiezen route A of B, schatten de bouwtijd en schrappen wat te veel kost voor wat het oplevert.</li>
+  <li><b>Stap 5, bouwen:</b> eerst de Moet-eisen, daarna uitbreiden. Liv's werkplek gebruiken we als testcase.</li>
+</ul>
+
+<footer>
+  <div class="pay">GO PLAY!</div>
+  <div>EXIT Toys · intern · stagiair-werkplek</div>
+</footer>
+</main>
+
+<script>
+const CATS = [
+  ["toegang","Toegang en accounts"],
+  ["start","Startpagina en werkplek"],
+  ["editor","Pagina's schrijven"],
+  ["planning","Plannen"],
+  ["notulen","Notuleren"],
+  ["ideeen","Ideeën uitwerken"],
+  ["samen","Samenwerken"],
+  ["vinden","Vinden en ordenen"],
+  ["beheer","Beheer en veiligheid"]
+];
+// src: "liv" = gezien in Liv's werkplek, "onderzoek" = uit het Notion-onderzoek, "eis" = eis van EXIT
+const REQS = [
+  ["R01","toegang","Inloggen met je EXIT-account","Je logt in met je Microsoft-account van EXIT (Entra ID). Je hebt geen apart wachtwoord nodig.","M","eis"],
+  ["R02","toegang","Eigen privé-omgeving","Iedereen heeft een eigen privé-deel dat collega's alleen zien als je het deelt.","M","eis"],
+  ["R03","toegang","Beheerders kunnen altijd alles zien","Admins kunnen alle pagina's inzien, ook privé-pagina's. Op het scherm staat duidelijk dat dit zo is.","M","eis"],
+  ["R04","toegang","Delen met collega's","Een pagina delen met een collega, met recht om te lezen, te reageren of te bewerken. Subpagina's gaan automatisch mee.","M","eis"],
+  ["R05","toegang","Gedeelde teamruimte","Een ruimte waarin alles automatisch gedeeld is met een groep, bijvoorbeeld \"Stagiairs\" of \"Marketing\". Denk aan de Social Media Hub.","M","liv"],
+  ["R06","toegang","Openbare link voor mensen buiten EXIT","Een pagina delen met iemand zonder EXIT-account, bijvoorbeeld een school of stagebegeleider.","W","onderzoek"],
+
+  ["R10","start","Ingerichte stagiair-werkplek","Een nieuwe stagiair krijgt meteen een werkplek met To Do, Notities, Kalender en taken, Tips en tricks, Afgeronde projecten en Contacten, net als het huidige sjabloon.","M","liv"],
+  ["R11","start","Kolommen op een pagina","Een pagina in twee of meer kolommen verdelen, zoals Liv's startpagina met links de To Do en rechts de kalender.","M","liv"],
+  ["R12","start","Database midden op een pagina","Een takenlijst of kalender direct op je startpagina tonen in plaats van op een aparte pagina.","M","liv"],
+  ["R13","start","Uitklapblokken (toggles)","Een blok dat je open- en dichtklapt, om links en lijsten netjes weg te stoppen.","M","liv"],
+  ["R14","start","Icoon en omslagfoto per pagina","Een emoji of icoon bij de titel en een omslagafbeelding bovenaan de pagina.","C","liv"],
+
+  ["R20","editor","Basisblokken","Tekst, kop 1-3, opsomming, genummerde lijst, checklist, citaat, scheidingslijn en een gekleurd kader (callout).","M","onderzoek"],
+  ["R21","editor","/-menu","Typ / om een blok te kiezen, zoals Liv in \"Hoe maak je notities\" uitlegt.","M","liv"],
+  ["R22","editor","Sneltoetsen tijdens het typen","# wordt een kopje, - een lijst en [] een checkbox. Met Tab spring je in.","S","onderzoek"],
+  ["R23","editor","Blokken verslepen","Een blok met de muis naar een andere plek of in een kolom slepen.","S","onderzoek"],
+  ["R24","editor","Simpele tabellen","Een losse tabel in de tekst, zoals de draaidagen en posts per week in de contentplanning.","M","liv"],
+  ["R25","editor","Afbeeldingen en bestanden","Afbeeldingen en bestanden (pdf, docx) in de pagina slepen of plakken.","M","liv"],
+  ["R26","editor","Mooie linkkaartjes","Plak je een link, dan krijg je een kaartje met titel en plaatje. Handig voor inspiratie en concurrenten.","S","onderzoek"],
+  ["R27","editor","Embeds","YouTube, Figma, Canva of een Google-document laten zien in de pagina.","C","onderzoek"],
+  ["R28","editor","Verwijzen naar pagina's en mensen","Met @ link je naar een andere pagina of noem je een collega.","S","liv"],
+  ["R29","editor","Automatisch opslaan","Je hoeft nooit op opslaan te drukken.","M","onderzoek"],
+
+  ["R30","planning","Takendatabase met velden","Taken met naam, datum en tijd, status, tags, eigenaar en een korte omschrijving.","M","liv"],
+  ["R31","planning","Eigen statussen met kleuren","Zelf statussen en labels kiezen, zoals Vastgelopen en Feedback afwachten, en die een kleur geven.","M","liv"],
+  ["R32","planning","Kalenderweergave","Een week- en maandweergave, met of zonder weekend.","M","liv"],
+  ["R33","planning","Bordweergave (kanban)","Kaartjes in kolommen per status die je versleept.","M","liv"],
+  ["R34","planning","Tabel met filteren, sorteren en groeperen","Bijvoorbeeld \"Per type\" of \"alleen deze week\", zoals in de Social Media Hub.","S","liv"],
+  ["R35","planning","Mijn taken","Eén overzicht met al jouw taken uit alle pagina's en gedeelde ruimtes.","S","onderzoek"],
+  ["R36","planning","Dagelijkse To Do","Een snelle checklist voor vandaag. Wat niet af is schuif je door naar morgen.","S","liv"],
+  ["R37","planning","Tijdlijn en grafieken","Een tijdlijnweergave en simpele grafieken, zoals bij Afgeronde projecten.","C","liv"],
+  ["R38","planning","Formules, relaties en rollups","Geavanceerde databasefuncties die rekenen of databases aan elkaar koppelen.","W","onderzoek"],
+
+  ["R40","notulen","Sjabloon voor vergadernotulen","Datum, aanwezigen, agenda, besproken punten, besluiten en actiepunten met eigenaar en deadline.","M","onderzoek"],
+  ["R41","notulen","Actiepunten worden taken","Een actiepunt uit de notulen verschijnt automatisch in de takenlijst van wie het moet doen.","S","onderzoek"],
+  ["R42","notulen","Logboek per dag","Met één klik een nieuwe dag beginnen in je logboek, met de datum er al bij.","S","liv"],
+  ["R43","notulen","Overzicht van alle notulen","Alle vergaderingen in één lijst op datum. Ook terug te vinden voor wie er niet bij was.","S","onderzoek"],
+  ["R44","notulen","Koppeling met de Outlook-agenda","Notulen starten vanuit een afspraak in Outlook.","C","onderzoek"],
+
+  ["R50","ideeen","Ideeënbord","Ideeën als kaartjes die doorschuiven van idee naar concept naar uitgewerkt.","S","liv"],
+  ["R51","ideeen","Galerijweergave / moodboard","Kaartjes met een grote afbeelding, voor moodboards en concepten.","C","liv"],
+  ["R52","ideeen","Pagina verplaatsen naar een gedeelde ruimte","Een idee begint privé en verhuist later naar de teamruimte, zoals de contentplanning naar de Social Media Hub.","M","liv"],
+  ["R53","ideeen","Whiteboard / vrij canvas","Vrij tekenen en blokken neerzetten zoals in Miro of FigJam.","W","onderzoek"],
+
+  ["R60","samen","Opmerkingen bij tekst","Een stuk tekst selecteren en er een opmerking of vraag bij zetten, bijvoorbeeld feedback van je begeleider.","S","onderzoek"],
+  ["R61","samen","Tegelijk bewerken","Met meerdere mensen tegelijk in dezelfde pagina werken en elkaar live zien typen.","S","onderzoek"],
+  ["R62","samen","Versiegeschiedenis","Zien wie wat heeft aangepast en een oude versie terugzetten.","S","onderzoek"],
+  ["R63","samen","Prullenbak","Een verwijderde pagina staat nog 30 dagen in de prullenbak.","M","onderzoek"],
+  ["R64","samen","Meldingen","Een melding als iemand je noemt, een taak aan je toewijst of op je reageert.","C","onderzoek"],
+
+  ["R70","vinden","Zoeken","Zoeken in de titels en tekst van alle pagina's die je mag zien.","M","onderzoek"],
+  ["R71","vinden","Favorieten en recent","Pagina's vastpinnen en zien wat je laatst hebt geopend.","S","onderzoek"],
+  ["R72","vinden","Sjablonengalerij","Kant-en-klare EXIT-sjablonen: notulen, contentplanning, projectreflectie, logboek en ideeënbord.","M","liv"],
+  ["R73","vinden","Archief","Afgeronde dingen naar een archief verplaatsen, zodat de planning overzichtelijk blijft maar niets kwijtraakt.","C","liv"],
+
+  ["R80","beheer","Beheerdersoverzicht","Admins zien alle gebruikers en hun werkplekken en kunnen accounts uitzetten.","M","eis"],
+  ["R81","beheer","Overdragen als een stage stopt","Werk van een vertrekkende stagiair overdragen aan een collega of netjes archiveren.","M","eis"],
+  ["R82","beheer","Back-ups","Automatische back-ups op Azure, met de mogelijkheid om een pagina terug te zetten.","M","eis"],
+  ["R83","beheer","Exporteren","Een pagina downloaden als pdf of Word, bijvoorbeeld voor je stageverslag of portfolio.","S","liv"],
+  ["R84","beheer","Importeren uit Notion","Bestaande Notion-pagina's overzetten, zodat jullie huidige werk meegaat.","S","liv"],
+  ["R85","beheer","Nederlandse interface","Alle knoppen en menu's in het Nederlands.","M","eis"],
+  ["R86","beheer","Snel","Een pagina staat binnen ongeveer een seconde op je scherm, ook als hij lang is.","S","onderzoek"],
+  ["R87","beheer","Werkt op je telefoon","Op je telefoon lezen en kleine dingen aanpassen. Op de laptop werk je volledig.","S","onderzoek"],
+  ["R88","beheer","Offline werken","Werken zonder internet en later synchroniseren.","W","onderzoek"],
+  ["R89","beheer","EXIT-huisstijl","Het EXIT-logo en de EXIT-kleuren in de app, rustig toegepast.","C","eis"]
+].map(([id,cat,title,desc,sug,src])=>({id,cat,title,desc,sug,src}));
+
+const QUESTIONS = [
+  ["Q1","Wat gebruik je in Notion het meest, en wat bijna nooit?"],
+  ["Q2","Waar loop je nu tegenaan in Notion, of wat ergert je?"],
+  ["Q3","Welke andere tools gebruik je naast Notion voor plannen of notities (Monday, Box, Word, Teams, je telefoon)? Waarom daar?"],
+  ["Q4","Wat zou je missen als het nieuwe systeem er morgen was, maar Notion niet meer?"],
+  ["Q5","Route A (zelf bouwen) of route B (bestaand pakket): heb je een voorkeur, en waarom?"]
+];
+
+const PRIO = {M:"Moet",S:"Zou moeten",C:"Kan",W:"Niet nu"};
+const SRC = {liv:"Gezien bij Liv",onderzoek:"Uit onderzoek",eis:"Eis van EXIT"};
+
+let mine = {r:{}, q:{}};   // eigen keuzes
+let others = {};           // userId -> {r,q}
+let myId = null, db = null, userNs = null, names = {};
+let canWrite = false, loadedMine = false, filter = "all";
+
+const $ = (s,el=document)=>el.querySelector(s);
+const el = (tag, attrs={}, ...kids)=>{const n=document.createElement(tag);for(const[k,v]of Object.entries(attrs)){if(k==="class")n.className=v;else if(k==="text")n.textContent=v;else n.setAttribute(k,v);}kids.forEach(k=>k&&n.append(k));return n;};
+
+function setStatus(t){ $("#status").textContent = t; }
+
+function votesFor(id){
+  const out=[];
+  for(const [uid,d] of Object.entries(others)){ const v=d?.r?.[id]; if(v&&(v.p||v.n)) out.push({uid,...v}); }
+  if(myId){ const v=mine.r[id]; if(v&&(v.p||v.n)) out.push({uid:myId,...v,me:true}); }
+  return out;
+}
+function isSplit(id){ const ps=new Set(votesFor(id).map(v=>v.p).filter(Boolean)); return ps.size>1; }
+
+function renderReqs(){
+  const root=$("#reqlist"); root.textContent="";
+  let shown=0;
+  for(const [ck,cname] of CATS){
+    const items=REQS.filter(r=>r.cat===ck).filter(r=>{
+      if(filter==="open") return !mine.r[r.id]?.p;
+      if(filter==="split") return isSplit(r.id);
+      return true;
+    });
+    if(!items.length) continue;
+    const sec=el("section",{class:"cat"});
+    sec.append(el("h3",{},cname, el("small",{text:items.length+" eisen"})));
+    for(const r of items){ sec.append(renderReq(r)); shown++; }
+    root.append(sec);
+  }
+  if(!shown) root.append(el("p",{class:"src",text: filter==="split" ? "Nog geen eisen waar jullie verschillend over denken." : "Je hebt alles beoordeeld. Top!"}));
+  updateProgress();
+}
+
+function renderReq(r){
+  const row=el("article",{class:"req",id:"req-"+r.id});
+  row.append(el("div",{class:"rid",text:r.id}));
+  const body=el("div");
+  body.append(el("div",{class:"rtitle",text:r.title}));
+  body.append(el("p",{class:"rdesc",text:r.desc}));
+  const tags=el("div",{class:"tags"});
+  tags.append(el("span",{class:"tag sug "+r.sug,text:"Voorstel: "+PRIO[r.sug]}));
+  tags.append(el("span",{class:"tag"+(r.src==="liv"?" liv":""),text:SRC[r.src]}));
+  body.append(tags);
+
+  const cur=mine.r[r.id]||{};
+  const pick=el("div",{class:"pick",role:"group","aria-label":"Prioriteit voor "+r.id});
+  for(const k of ["M","S","C","W"]){
+    const b=el("button",{class:"pbtn "+k,type:"button","aria-pressed":String(cur.p===k),id:"p-"+r.id+"-"+k,text:PRIO[k]});
+    if(!canWrite) b.disabled=true;
+    b.addEventListener("click",()=>{ const now=mine.r[r.id]||{}; now.p = now.p===k ? "" : k; mine.r[r.id]=now; queueSave(); refreshRow(r.id); updateProgress(); });
+    pick.append(b);
+  }
+  const noteBtn=el("button",{class:"linkbtn",type:"button",text: cur.n ? "Opmerking bewerken" : "+ Opmerking"});
+  if(!canWrite) noteBtn.disabled=true;
+  pick.append(noteBtn);
+  body.append(pick);
+
+  const ta=el("textarea",{id:"n-"+r.id,placeholder:"Wat mis je, of wat moet anders?","aria-label":"Opmerking bij "+r.id});
+  ta.value=cur.n||""; ta.hidden=!cur.n;
+  ta.addEventListener("input",()=>{ const now=mine.r[r.id]||{}; now.n=ta.value; mine.r[r.id]=now; queueSave(); });
+  noteBtn.addEventListener("click",()=>{ ta.hidden=false; ta.focus(); });
+  body.append(ta);
+
+  body.append(el("div",{class:"team",id:"t-"+r.id}));
+  row.append(body);
+  fillTeam(r.id, row);
+  return row;
+}
+
+function refreshRow(id){
+  const cur=mine.r[id]||{};
+  for(const k of ["M","S","C","W"]){ const b=document.getElementById("p-"+id+"-"+k); if(b) b.setAttribute("aria-pressed",String(cur.p===k)); }
+  fillTeam(id);
+}
+
+function nameOf(uid){ if(uid===myId) return "Jij"; return names[uid] || "Collega"; }
+
+function fillTeam(id, scope){
+  const box = scope ? scope.querySelector("#t-"+id) : document.getElementById("t-"+id);
+  if(!box) return;
+  box.textContent="";
+  const vs=votesFor(id).filter(v=>v.uid!==myId || v.p || v.n);
+  const otherVs=vs.filter(v=>v.uid!==myId);
+  if(!otherVs.length) return;
+  const counts={M:0,S:0,C:0,W:0}; vs.forEach(v=>{ if(v.p) counts[v.p]++; });
+  const line=el("div");
+  line.append(el("span",{class:"who",text:"Team: "}));
+  const parts=Object.entries(counts).filter(([,n])=>n).map(([k,n])=>n+"× "+PRIO[k]);
+  line.append(document.createTextNode(parts.join(" · ")||"nog geen keuze"));
+  if(isSplit(id)) line.append(document.createTextNode(" "), el("span",{class:"split",text:"· verschil van mening"}));
+  box.append(line);
+  const ul=el("ul");
+  for(const v of otherVs){
+    const li=el("li");
+    if(v.p) li.append(el("span",{class:"dot "+v.p}));
+    li.append(el("span",{class:"who",text:nameOf(v.uid)}), document.createTextNode(": "+(v.p?PRIO[v.p]:"geen keuze")+(v.n?" · “"+v.n+"”":"")));
+    ul.append(li);
+  }
+  box.append(ul);
+}
+
+function updateProgress(){
+  const done=REQS.filter(r=>mine.r[r.id]?.p).length;
+  $("#progress").textContent = done+" van "+REQS.length+" beoordeeld";
+}
+
+function renderQuestions(){
+  const root=$("#questions"); root.textContent="";
+  for(const [qid,text] of QUESTIONS){
+    const wrap=el("div",{class:"q"});
+    wrap.append(el("label",{for:"a-"+qid,text:text}));
+    const ta=el("textarea",{id:"a-"+qid,placeholder:"Je antwoord…"});
+    ta.value=mine.q[qid]||"";
+    if(!canWrite) ta.disabled=true;
+    ta.addEventListener("input",()=>{ mine.q[qid]=ta.value; queueSave(); });
+    wrap.append(ta);
+    const oth=el("div",{class:"others",id:"o-"+qid});
+    wrap.append(oth);
+    root.append(wrap);
+    fillAnswers(qid);
+  }
+}
+function fillAnswers(qid){
+  const box=document.getElementById("o-"+qid); if(!box) return;
+  box.textContent="";
+  for(const [uid,d] of Object.entries(others)){
+    const a=d?.q?.[qid]; if(!a) continue;
+    const p=el("div"); p.append(el("b",{text:nameOf(uid)+": "}), document.createTextNode(a)); box.append(p);
+  }
+}
+
+// opslaan
+let saveTimer=null, saving=false, dirty=false;
+function queueSave(){
+  if(!canWrite) return;
+  dirty=true; setStatus("Wijziging…");
+  clearTimeout(saveTimer); saveTimer=setTimeout(flush,800);
+}
+async function flush(){
+  if(saving||!dirty) return;
+  saving=true; dirty=false; setStatus("Opslaan…");
+  try{
+    await db.doc("votes/"+myId).set({r:mine.r,q:mine.q});
+    setStatus(dirty?"Wijziging…":"Opgeslagen");
+  }catch(e){
+    dirty=true;
+    setStatus(e&&e.code==="permission_denied" ? "Je hebt geen schrijfrechten op deze pagina. Vraag Ricardo om je toegang te geven." : "Opslaan lukte niet. Je wijziging blijft staan, probeer het zo opnieuw.");
+  }finally{
+    saving=false;
+    if(dirty) saveTimer=setTimeout(flush,1500);
+  }
+}
+
+async function resolveNames(){
+  if(!userNs) return;
+  const ids=Object.keys(others);
+  if(!ids.length) return;
+  try{
+    const ps=await userNs.profiles(ids);
+    for(const id of ids){ const n=ps?.[id]?.name; if(n) names[id]=n; }
+  }catch(_){}
+}
+
+async function start(){
+  renderReqs(); renderQuestions();
+  let timeout=setTimeout(()=>setStatus("Geen verbinding. Open de pagina terwijl je bent ingelogd op claude.ai, anders worden je keuzes niet bewaard."),10000);
+  try{
+    db = window.claude ? await window.claude.use("db") : null;
+    userNs = window.claude ? await window.claude.use("user") : null;
+  }catch(_){ db=null; }
+  if(!db || !userNs){ clearTimeout(timeout); setStatus("Alleen lezen: log in op claude.ai om mee te beoordelen."); return; }
+  try{ myId = await userNs.id(); }catch(_){ myId=null; }
+  if(!myId){ clearTimeout(timeout); setStatus("Alleen lezen: log in om mee te beoordelen."); return; }
+  let can=null; try{ can = await userNs.can("data.write"); }catch(_){}
+  canWrite = can !== false;
+
+  db.collection("votes").onSnapshot(async snap=>{
+    clearTimeout(timeout);
+    const next={};
+    for(const d of snap.docs){
+      if(d.id===myId){
+        if(!loadedMine){ const data=d.data()||{}; mine={r:data.r||{},q:data.q||{}}; }
+      } else next[d.id]=d.data()||{};
+    }
+    const first=!loadedMine; loadedMine=true; others=next;
+    await resolveNames();
+    if(first){ renderReqs(); renderQuestions(); setStatus(canWrite?"Klaar. Je keuzes worden automatisch opgeslagen.":"Alleen lezen: je kunt de keuzes van anderen bekijken."); }
+    else {
+      REQS.forEach(r=>fillTeam(r.id)); QUESTIONS.forEach(([q])=>fillAnswers(q));
+      if(filter==="split") renderReqs();
+    }
+  }, err=>{
+    clearTimeout(timeout);
+    setStatus("De gedeelde keuzes konden niet worden geladen. Herlaad de pagina om het opnieuw te proberen.");
+  });
+}
+
+$("#filters").addEventListener("click",e=>{
+  const b=e.target.closest(".chip"); if(!b) return;
+  filter=b.dataset.f;
+  document.querySelectorAll("#filters .chip").forEach(c=>c.setAttribute("aria-pressed",String(c===b)));
+  renderReqs();
+});
+
+start();
+</script>
