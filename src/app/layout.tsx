@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: { default: "EXITnotion", template: "%s · EXITnotion" },
+  title: { default: "Homebase", template: "%s · Homebase" },
   description: "Werkplek voor plannen, notuleren en ideeën uitwerken bij EXIT Toys",
 };
 

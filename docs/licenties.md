@@ -14,7 +14,7 @@ De kolommen-functie valt onder GPL-3.0. De verplichtingen van de GPL (zoals de b
 bij **verspreiden** ("conveying") aan anderen. Volgens de GPL-FAQ van de FSF is gebruik binnen één organisatie, ook door
 medewerkers, geen verspreiding.
 
-**Gevolg voor EXIT:** zolang EXITnotion alleen door medewerkers en stagiairs van EXIT / Dutch Toys Group wordt gebruikt,
+**Gevolg voor EXIT:** zolang Homebase alleen door medewerkers en stagiairs van EXIT / Dutch Toys Group wordt gebruikt,
 mag dit zonder meer. Gaan mensen van buiten de organisatie de app gebruiken (bijvoorbeeld een school of extern bureau),
-dan moet EXIT óf de broncode van EXITnotion onder GPL beschikbaar stellen aan die gebruikers, óf een commerciële licentie
+dan moet EXIT óf de broncode van Homebase onder GPL beschikbaar stellen aan die gebruikers, óf een commerciële licentie
 voor BlockNote XL nemen, óf de kolommen-functie vervangen. Leg dit opnieuw voor als dat ooit speelt.

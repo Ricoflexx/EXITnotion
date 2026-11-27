@@ -1,4 +1,4 @@
-# Azure inrichten voor EXITnotion
+# Azure inrichten voor Homebase
 
 Voor: Sven (besluit B6). Eenmalig werk; daarna rolt GitHub elke wijziging op `main` vanzelf uit.
 Reken op ongeveer een uur, als je rechten hebt in Entra ID en op een Azure-subscription.
@@ -16,13 +16,13 @@ Alles staat in `infra/main.bicep`. Regio: West Europe.
 ## 1. Resourcegroep
 
 ```bash
-az group create --name rg-exitnotion --location westeurope
+az group create --name rg-homebase --location westeurope
 ```
 
 ## 2. App-registratie voor inloggen (Entra ID)
 
 1. Entra ID → **App registrations** → **New registration**
-   - Naam: `EXITnotion`
+   - Naam: `Homebase`
    - Supported account types: **Accounts in this organizational directory only** (single tenant)
    - Redirect URI (Web): `https://<app-url>/api/auth/callback/microsoft-entra-id`
      Voeg na stap 5 ook de standaard-URL toe: `https://<appnaam>.azurewebsites.net/api/auth/callback/microsoft-entra-id`
@@ -30,21 +30,21 @@ az group create --name rg-exitnotion --location westeurope
 3. **Token configuration** → **Add groups claim** → *Security groups*, aan voor het **ID**-token.
 4. Noteer de **Application (client) ID** (`ENTRA_APP_CLIENT_ID`) en de **Directory (tenant) ID**.
 
-Wil je dat alleen bepaalde mensen kunnen inloggen? Zet in **Enterprise applications → EXITnotion → Properties**
+Wil je dat alleen bepaalde mensen kunnen inloggen? Zet in **Enterprise applications → Homebase → Properties**
 *Assignment required* op **Yes** en wijs gebruikers of een groep toe.
 
 ## 3. Beheerdersgroep
 
-Maak een beveiligingsgroep **EXITnotion-Beheerders** en voeg Ricardo (en jezelf) toe.
+Maak een beveiligingsgroep **Homebase-Beheerders** en voeg Ricardo (en jezelf) toe.
 Noteer de **Object ID** (`ADMIN_GROUP_ID`). Leden zien in de app alle pagina's (R03), en elke inzage wordt gelogd (R93).
 
 ## 4. Uitrollen vanuit GitHub zonder wachtwoorden (OIDC)
 
-1. Maak een tweede app-registratie **EXITnotion-GitHub** (dit is de "deployer", niet de login-app).
+1. Maak een tweede app-registratie **Homebase-GitHub** (dit is de "deployer", niet de login-app).
 2. **Certificates & secrets → Federated credentials → Add** → *GitHub Actions deploying Azure resources*:
    - Organization en Repository: de GitHub-organisatie en repository waar de code staat (bijvoorbeeld die van EXIT),
      Entity: **Environment**, naam: `productie`
-3. Geef deze app de rol **Contributor** op de resourcegroep `rg-exitnotion`, plus
+3. Geef deze app de rol **Contributor** op de resourcegroep `rg-homebase`, plus
    **Role Based Access Control Administrator** (alleen nodig omdat Bicep de app toegang geeft tot de opslag).
 
 ## 5. GitHub-omgeving "productie"
@@ -55,10 +55,10 @@ Repository → Settings → Environments → **New environment**: `productie`. Z
 
 | Naam | Waarde |
 |---|---|
-| `AZURE_CLIENT_ID` | Client ID van **EXITnotion-GitHub** |
+| `AZURE_CLIENT_ID` | Client ID van **Homebase-GitHub** |
 | `AZURE_TENANT_ID` | Tenant ID |
 | `AZURE_SUBSCRIPTION_ID` | Subscription ID |
-| `ENTRA_APP_CLIENT_SECRET` | Client secret van de login-app **EXITnotion** |
+| `ENTRA_APP_CLIENT_SECRET` | Client secret van de login-app **Homebase** |
 | `POSTGRES_ADMIN_PASSWORD` | Een sterk wachtwoord (bewaar het in de wachtwoordmanager) |
 | `AUTH_SECRET` | `openssl rand -base64 32` |
 
@@ -66,10 +66,10 @@ Repository → Settings → Environments → **New environment**: `productie`. Z
 
 | Naam | Waarde |
 |---|---|
-| `AZURE_RESOURCE_GROUP` | `rg-exitnotion` |
+| `AZURE_RESOURCE_GROUP` | `rg-homebase` |
 | `APP_URL` | Bijvoorbeeld `https://werkplek.dutchtoysgroup.com` (eerst mag de azurewebsites.net-URL) |
-| `ENTRA_APP_CLIENT_ID` | Client ID van de login-app **EXITnotion** |
-| `ADMIN_GROUP_ID` | Object ID van **EXITnotion-Beheerders** |
+| `ENTRA_APP_CLIENT_ID` | Client ID van de login-app **Homebase** |
+| `ADMIN_GROUP_ID` | Object ID van **Homebase-Beheerders** |
 | `AZURE_WEBAPP_NAME` | Komt uit stap 6 (output `appName`) |
 
 Tip: zet bij de omgeving **Required reviewers** aan, dan gaat niets live zonder akkoord.

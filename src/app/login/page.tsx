@@ -4,6 +4,7 @@ import { loginDev, loginMicrosoft } from "@/app/actions";
 import { db } from "@/db";
 import { isNull } from "drizzle-orm";
 import { users } from "@/db/schema";
+import { HomebaseMark } from "@/components/Logo";
 
 export const metadata = { title: "Inloggen" };
 
@@ -24,7 +25,13 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
   return (
     <main className="center">
       <div className="card">
-        <h1>EXITnotion</h1>
+        <div className="login-brand">
+          <HomebaseMark size={72} animated />
+          <div>
+            <h1>Homebase</h1>
+            <div className="muted">van EXIT Toys</div>
+          </div>
+        </div>
         <p className="muted" style={{ margin: 0 }}>Plannen, notuleren en ideeën uitwerken. Log in met je EXIT-account.</p>
         {error && <div className="banner admin">{error}</div>}
         {entraEnabled && (

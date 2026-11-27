@@ -1,5 +1,5 @@
 /**
- * Notion → EXITnotion. Pure omzetfuncties: Notion-blokken naar editorblokken (BlockNote) en Notion-databases naar
+ * Notion → Homebase. Pure omzetfuncties: Notion-blokken naar editorblokken (BlockNote) en Notion-databases naar
  * ons databasemodel. Alles wat de buitenwereld raakt (bestanden, gebruikers, pagina-ids) komt binnen via `ConvertContext`.
  */
 import { newId, type Color, type DbSchema, type Option, type Property, type Props, type StatusGroup, type View } from "../db-model";

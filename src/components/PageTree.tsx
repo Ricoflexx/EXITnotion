@@ -13,7 +13,7 @@ export interface TreeItem {
   kind?: string;
 }
 
-const STORAGE_KEY = "exitnotion:open";
+const STORAGE_KEY = "homebase:open";
 
 function readOpen(): Set<string> {
   try {

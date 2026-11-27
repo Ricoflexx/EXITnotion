@@ -16,19 +16,19 @@ jobs:
       postgres:
         image: postgres:16
         env:
-          POSTGRES_USER: exitnotion
-          POSTGRES_PASSWORD: exitnotion
-          POSTGRES_DB: exitnotion_test
+          POSTGRES_USER: homebase
+          POSTGRES_PASSWORD: homebase
+          POSTGRES_DB: homebase_test
         ports: ["5432:5432"]
         options: >-
-          --health-cmd "pg_isready -U exitnotion"
+          --health-cmd "pg_isready -U homebase"
           --health-interval 5s
           --health-timeout 5s
           --health-retries 10
     env:
-      TEST_DATABASE_URL: postgres://exitnotion:exitnotion@localhost:5432/exitnotion_test
+      TEST_DATABASE_URL: postgres://homebase:homebase@localhost:5432/homebase_test
       # Alleen nodig zodat de build de databasemodule kan laden; er wordt geen verbinding gemaakt.
-      DATABASE_URL: postgres://exitnotion:exitnotion@localhost:5432/exitnotion_test
+      DATABASE_URL: postgres://homebase:homebase@localhost:5432/homebase_test
       AUTH_SECRET: ci-only-not-secret
     steps:
       - uses: actions/checkout@v4

@@ -1,4 +1,4 @@
-# EXITnotion
+# Homebase
 
 Eigen werkplek in de stijl van Notion voor de stagiairs van EXIT Toys: plannen, notuleren en ideeën uitwerken.
 Draait op Azure en je logt in met je EXIT-account (Microsoft Entra ID).
@@ -19,8 +19,8 @@ tokens en sleutels komen alleen in de GitHub-omgeving `productie` en in Azure (z
 Overzetten naar een nieuwe (lege) repository, bijvoorbeeld in de GitHub-organisatie van EXIT:
 
 ```bash
-git clone --branch claude/zen-planck-lipd70 https://github.com/Ricoflexx/EXITnotion.git exitnotion
-cd exitnotion
+git clone --branch claude/zen-planck-lipd70 https://github.com/Ricoflexx/EXITnotion.git homebase
+cd homebase
 git remote rename origin oud
 git remote add origin https://github.com/<organisatie>/<repository>.git
 git push -u origin HEAD:main
@@ -52,8 +52,8 @@ Nodig: [Node.js 22](https://nodejs.org) (LTS), Git, en [Docker Desktop](https://
 (of een eigen PostgreSQL 16). Werkt op Windows, Mac en Linux.
 
 ```bash
-git clone <url-van-de-repository> exitnotion
-cd exitnotion
+git clone <url-van-de-repository> homebase
+cd homebase
 npm install
 docker compose up -d db
 ```
@@ -62,7 +62,7 @@ Maak een bestand `.env.local` in de map met deze inhoud (zet achter `AUTH_SECRET
 `node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"`):
 
 ```
-DATABASE_URL=postgres://exitnotion:exitnotion@localhost:5432/exitnotion
+DATABASE_URL=postgres://homebase:homebase@localhost:5432/homebase
 AUTH_SECRET=
 AUTH_URL=http://localhost:3000
 AUTH_DEV_LOGIN=true
@@ -82,7 +82,7 @@ samen bewerken te proberen.
 
 ```bash
 npm run typecheck
-npm test          # unit- en integratietests; gebruikt de database exitnotion_test
+npm test          # unit- en integratietests; gebruikt de database homebase_test
 npm run build
 ```
 

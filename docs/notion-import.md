@@ -1,11 +1,11 @@
 # Importeren uit Notion
 
-Hiermee zet je een werkplek uit Notion over naar EXITnotion, bijvoorbeeld de stagewerkplek van Liv of de Social Media Hub.
+Hiermee zet je een werkplek uit Notion over naar Homebase, bijvoorbeeld de stagewerkplek van Liv of de Social Media Hub.
 Alleen beheerders kunnen importeren (Beheer → Importeren uit Notion).
 
 ## Wat meekomt
 
-| Uit Notion | In EXITnotion |
+| Uit Notion | In Homebase |
 |---|---|
 | Pagina's en subpagina's (met emoji-icoon) | Pagina's in dezelfde boomstructuur |
 | Tekst met vet, cursief, doorhalen, onderstrepen, code, kleuren en links | Hetzelfde |
@@ -30,7 +30,7 @@ Alleen beheerders kunnen importeren (Beheer → Importeren uit Notion).
 - **Gekoppelde databases** (een weergave van een database die ergens anders staat). Importeer de originele database.
 - **Opmerkingen, versiegeschiedenis, inhoudsopgave, kruimelpad en sjabloonknoppen.**
 - **Personen zonder bekend e-mailadres.** Die vallen weg uit persoonsvelden. Laat collega's eerst één keer inloggen
-  in EXITnotion, dan zijn ze bekend.
+  in Homebase, dan zijn ze bekend.
 
 Alles wat is overgeslagen staat aan het eind van het importlog.
 
@@ -39,7 +39,7 @@ Alles wat is overgeslagen staat aan het eind van het importlog.
 ### 1. Integratie maken in Notion (eenmalig)
 
 1. Ga naar https://www.notion.so/profile/integrations en kies **New integration**.
-2. Naam: `EXITnotion import`. Kies de workspace van EXIT. Type: **Internal**.
+2. Naam: `Homebase import`. Kies de workspace van EXIT. Type: **Internal**.
 3. Capabilities: alleen **Read content**, en bij User capabilities **Read user information including email addresses**
    (nodig om personen te koppelen).
 4. Sla op en kopieer het **Internal Integration Secret**. Dat is het token. Behandel het als een wachtwoord.
@@ -47,13 +47,13 @@ Alles wat is overgeslagen staat aan het eind van het importlog.
 ### 2. De pagina delen met de integratie
 
 Open de pagina in Notion (bijvoorbeeld *Liv - Stage Workspace*) → **•••** rechtsboven → **Connections** →
-kies `EXITnotion import`. Alles onder die pagina is dan leesbaar voor de integratie.
+kies `Homebase import`. Alles onder die pagina is dan leesbaar voor de integratie.
 
 Staat een database ergens anders en is hij alleen gekoppeld, deel dan ook die pagina.
 
 ### 3. Importeren
 
-1. EXITnotion → **Beheer → Importeren uit Notion**.
+1. Homebase → **Beheer → Importeren uit Notion**.
 2. Plak de link van de pagina (in Notion: **•••** → **Link kopiëren**) en het token.
 3. Kies waar het moet komen. Voor een stagewerkplek is dat de privé-ruimte van de stagiair (die moet dus al één keer
    ingelogd zijn). Voor de Social Media Hub is dat een teamruimte.

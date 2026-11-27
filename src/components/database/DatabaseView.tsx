@@ -8,7 +8,7 @@ import { AddViewButton, ViewSettings } from "./menus";
 import { useDatabase } from "./useDatabase";
 import { BoardView, CalendarView, TableView } from "./views";
 
-const VIEW_KEY = (id: string) => `exitnotion:view:${id}`;
+const VIEW_KEY = (id: string) => `homebase:view:${id}`;
 
 /**
  * Een database met weergaven (R30–R34). Wordt gebruikt als volledige pagina en als blok midden op een pagina (R12).

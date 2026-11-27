@@ -12,8 +12,8 @@ export default defineConfig({
   test: {
     include: ["tests/**/*.test.ts"],
     env: {
-      UPLOAD_DIR: path.join(os.tmpdir(), "exitnotion-test-uploads"),
-      DATABASE_URL: process.env.TEST_DATABASE_URL ?? "postgres://exitnotion:exitnotion@localhost:5432/exitnotion_test",
+      UPLOAD_DIR: path.join(os.tmpdir(), "homebase-test-uploads"),
+      DATABASE_URL: process.env.TEST_DATABASE_URL ?? "postgres://homebase:homebase@localhost:5432/homebase_test",
     },
     globalSetup: ["tests/global-setup.ts"],
     // Integratietests delen één database; niet parallel draaien.

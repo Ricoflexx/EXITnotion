@@ -31,7 +31,7 @@ export interface ViewProps {
   ctx: Context;
 }
 
-const DRAG_TYPE = "application/x-exitnotion-row";
+const DRAG_TYPE = "application/x-homebase-row";
 
 function visibleProps(schema: DbSchema, view: View) {
   const ids = view.visible ?? schema.properties.map((p) => p.id);

@@ -1,1 +1,1 @@
-CREATE DATABASE exitnotion_test OWNER exitnotion;
+CREATE DATABASE homebase_test OWNER homebase;

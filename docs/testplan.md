@@ -1,6 +1,6 @@
 # Testplan: twee weken naast Notion
 
-Doel: weten of EXITnotion de dagelijkse Notion-werkplek van de stagiairs kan vervangen, voordat we verder bouwen
+Doel: weten of Homebase de dagelijkse Notion-werkplek van de stagiairs kan vervangen, voordat we verder bouwen
 (versie 1.1). Zie ook `bouwplan.md`, punt 1.7.
 
 ## Voorbereiding (Sven en Ricardo)
@@ -13,7 +13,7 @@ Doel: weten of EXITnotion de dagelijkse Notion-werkplek van de stagiairs kan ver
 
 ## Afspraken tijdens de test
 
-- Twee weken. Plannen, notuleren en ideeën uitwerken gebeurt in EXITnotion. Notion blijft open als vangnet:
+- Twee weken. Plannen, notuleren en ideeën uitwerken gebeurt in Homebase. Notion blijft open als vangnet:
   lukt iets niet, doe het dan in Notion en schrijf op wat er niet lukte.
 - Elke vrijdag een kwartier: wat werkte, wat miste, wat irriteerde. Ricardo zet de punten in een database
   **Feedback** in de teamruimte (velden: Wat, Soort [mist / werkt niet / irritant / top], Hoe erg [1–3], Wie).

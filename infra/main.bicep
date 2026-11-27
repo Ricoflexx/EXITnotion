@@ -1,4 +1,4 @@
-// EXITnotion op Azure: App Service (Linux, Node 22), PostgreSQL Flexible Server en een Storage-account voor uploads.
+// Homebase op Azure: App Service (Linux, Node 22), PostgreSQL Flexible Server en een Storage-account voor uploads.
 // Uitrollen: zie docs/azure-setup.md (workflow "Infrastructuur" of az deployment group create).
 
 @description('Regio. West Europe ligt het dichtst bij en houdt data in de EU.')
@@ -7,13 +7,13 @@ param location string = 'westeurope'
 @description('Korte naam; wordt gebruikt in alle resourcenamen. Alleen kleine letters en cijfers.')
 @minLength(3)
 @maxLength(14)
-param name string = 'exitnotion'
+param name string = 'homebase'
 
 @description('Publieke URL van de app, zonder slash aan het eind. Bijvoorbeeld https://werkplek.dutchtoysgroup.com')
 param appUrl string
 
 @description('Beheerdersnaam van de PostgreSQL-server.')
-param postgresAdminLogin string = 'exitnotionadmin'
+param postgresAdminLogin string = 'homebaseadmin'
 
 @secure()
 @description('Wachtwoord van de PostgreSQL-beheerder.')
@@ -33,14 +33,14 @@ param entraClientId string
 @description('Client secret van de app-registratie.')
 param entraClientSecret string
 
-@description('Object-ID van de Entra-groep EXITnotion-Beheerders.')
+@description('Object-ID van de Entra-groep Homebase-Beheerders.')
 param adminGroupId string
 
 @description('App Service-plan. B1 is genoeg voor een handvol gebruikers.')
 param appServiceSku string = 'B1'
 
 var suffix = uniqueString(resourceGroup().id)
-var dbName = 'exitnotion'
+var dbName = 'homebase'
 
 resource plan 'Microsoft.Web/serverfarms@2023-12-01' = {
   name: '${name}-plan'

@@ -9,7 +9,7 @@ export default async function PrivacyPage() {
     <main className="center">
       <div className="card">
         <h1>Goed om te weten</h1>
-        <p style={{ margin: 0 }}>Hoi {user.name.split(" ")[0]}, welkom in EXITnotion. Voor je begint:</p>
+        <p style={{ margin: 0 }}>Hoi {user.name.split(" ")[0]}, welkom in Homebase. Voor je begint:</p>
         <ul style={{ margin: 0, paddingLeft: 20, display: "grid", gap: 6 }}>
           <li>Je hebt een eigen privé-ruimte. Collega&apos;s zien die alleen als jij iets met ze deelt.</li>
           <li><b>Beheerders kunnen alles inzien</b>, ook je privé-pagina&apos;s. Elke keer dat een beheerder iets bekijkt wat niet met hem gedeeld is, wordt dat vastgelegd.</li>

@@ -1,4 +1,4 @@
-# EXITnotion: bouwplan (stap 4, kritische blik)
+# Homebase: bouwplan (stap 4, kritische blik)
 
 Status: **vastgesteld op 26-11-2026**. Zie de besluiten onderaan.
 Bron: onderzoek en beoordeling in `docs/beoordeling-eisen.html` (stap 1 tot en met 3).
@@ -22,15 +22,15 @@ onderhoudbaar houden. Zie 1.5.
 
 ### 1.3 Nóg een tool naast Monday, Box, Word en Teams
 De stagiairs gebruiken die tools al, "omdat de rest van het bedrijf ermee werkt". Zonder afspraak dubbelt
-EXITnotion met Monday. Voorstel (besluit B3):
+Homebase met Monday. Voorstel (besluit B3):
 
 | Waar | Wat |
 |---|---|
-| **EXITnotion** | Persoonlijke werkplek: plannen, To Do, notuleren, logboek, ideeën uitwerken, teamhubs van de stagiairs (zoals de Social Media Hub) |
+| **Homebase** | Persoonlijke werkplek: plannen, To Do, notuleren, logboek, ideeën uitwerken, teamhubs van de stagiairs (zoals de Social Media Hub) |
 | **Monday** | Projecten en taken waar collega's buiten de stagiairs op wachten of in meekijken |
-| **Box** | Bestanden. EXITnotion linkt ernaar, maar kopieert ze niet (R90) |
+| **Box** | Bestanden. Homebase linkt ernaar, maar kopieert ze niet (R90) |
 | **Teams** | Chatten en bellen |
-| **Word** | Officiële documenten zoals het stageverslag. EXITnotion exporteert naar Word (R83) |
+| **Word** | Officiële documenten zoals het stageverslag. Homebase exporteert naar Word (R83) |
 
 ### 1.4 De zwaarste onderdelen
 | Onderdeel | Waarom zwaar | Keuze |
@@ -53,7 +53,7 @@ Stagiairs wisselen, de code blijft. Eisen aan de bouw zelf:
 Beheerders zien alles (R03). Dat mag, mits het open is:
 - Bij de eerste keer inloggen meldt de app dit, en het staat in de spelregels.
 - **Nieuw voorstel R93:** elke inzage door een beheerder in een privé-pagina van een ander wordt gelogd (wie, wat, wanneer).
-- Wachtwoorden horen niet in EXITnotion. In de huidige Notion bestaat een categorie "inloggegevens".
+- Wachtwoorden horen niet in Homebase. In de huidige Notion bestaat een categorie "inloggegevens".
 
 ### 1.7 "Geen idee" wat je zou missen
 Een eerlijk antwoord, maar het betekent dat we de echte behoefte pas zien als jullie het gebruiken. Daarom testen we
@@ -89,7 +89,7 @@ R38 formules (Kan). R88 offline staat op Niet nu (B2).
 | Datums in snelle invoer | chrono-node (kan Nederlands) | Voor "morgen 10:00" (R91) |
 | Database | Azure Database for PostgreSQL (Flexible Server), Drizzle ORM | Back-ups tot 35 dagen terug te zetten (R82). Zoeken met de Nederlandse full-text search van Postgres (R70). |
 | Bestanden | Azure Blob Storage | Uploads (R25) |
-| Inloggen | Microsoft Entra ID (single-tenant) via Auth.js | Alleen EXIT-accounts. De beheerdersrol komt uit een Entra-groep "EXITnotion-Beheerders". |
+| Inloggen | Microsoft Entra ID (single-tenant) via Auth.js | Alleen EXIT-accounts. De beheerdersrol komt uit een Entra-groep "Homebase-Beheerders". |
 | Hosting | Azure App Service (Linux), regio West Europe | Ondersteunt websockets, eenvoudig te beheren |
 | Uitrol | GitHub Actions + Bicep | Herhaalbaar en vastgelegd in code |
 | Lokaal ontwikkelen | Docker Compose: Postgres + Azurite (Blob-emulator) + een test-login | We kunnen bouwen voordat de Azure-toegang er is |

@@ -3,9 +3,9 @@ services:
   db:
     image: postgres:16
     environment:
-      POSTGRES_USER: exitnotion
-      POSTGRES_PASSWORD: exitnotion
-      POSTGRES_DB: exitnotion
+      POSTGRES_USER: homebase
+      POSTGRES_PASSWORD: homebase
+      POSTGRES_DB: homebase
     ports: ["5432:5432"]
     volumes:
       - db-data:/var/lib/postgresql/data

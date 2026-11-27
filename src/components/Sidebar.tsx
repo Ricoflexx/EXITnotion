@@ -5,13 +5,15 @@ import { getSidebar } from "@/lib/access";
 import { can } from "@/lib/permissions";
 import { PageTree } from "./PageTree";
 import { SearchShortcut } from "./SearchShortcut";
+import { HomebaseMark } from "./Logo";
 
 export async function Sidebar({ user }: { user: CurrentUser }) {
   const data = await getSidebar(user);
   return (
     <nav className="sidebar" aria-label="Werkplek">
-      <Link href="/" className="brand">
-        EXIT<span>notion</span>
+      <Link href="/" className="brand" aria-label="Homebase, naar je werkplek">
+        <HomebaseMark size={26} title="" />
+        <span>Homebase</span>
       </Link>
       <SearchShortcut />
       <Link href="/zoeken" className="side-link search-link">

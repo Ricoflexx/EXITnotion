@@ -1,5 +1,5 @@
 /**
- * Rechtenmodel van EXITnotion. Pure functies zonder database, zodat ze los te testen zijn.
+ * Rechtenmodel van Homebase. Pure functies zonder database, zodat ze los te testen zijn.
  *
  * Regels:
  * 1. In je eigen privé-ruimte heb je volledige rechten.

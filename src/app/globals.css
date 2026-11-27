@@ -1,4 +1,4 @@
-/* EXITnotion: rustige werkplek met de EXIT-huisstijl als accent (Changa One voor koppen, Rajdhani voor tekst). */
+/* Homebase: rustige werkplek met de EXIT-huisstijl als accent (Changa One voor koppen, Rajdhani voor tekst). */
 :root {
   --bg: #ffffff;
   --sidebar: #f5f8f0;
@@ -72,8 +72,26 @@ input[type="text"], input[type="email"], select {
   padding: 12px 8px 24px; position: sticky; top: 0; height: 100vh; overflow-y: auto;
   display: flex; flex-direction: column; gap: 14px;
 }
-.brand { display: flex; align-items: center; gap: 8px; padding: 4px 8px; font-family: var(--display); font-size: 20px; text-decoration: none; }
-.brand span { color: var(--green-ink); }
+.brand { display: flex; align-items: center; gap: 9px; padding: 4px 8px; font-family: var(--display); font-size: 21px; text-decoration: none; color: var(--fg); }
+.hb-mark { flex: none; display: block; }
+
+/* Inlogscherm met het geanimeerde logo */
+.login-brand { display: flex; align-items: center; gap: 16px; }
+.login-brand h1 { line-height: 1; }
+.hb-p { transform-box: fill-box; animation-fill-mode: both; animation-duration: .5s; animation-timing-function: cubic-bezier(.2,.8,.2,1); }
+.hb-stem-l { transform-origin: 50% 100%; animation-name: hb-growY; animation-delay: .1s; }
+.hb-bridge { transform-origin: 0% 50%; animation-name: hb-growX; animation-delay: .4s; animation-duration: .4s; }
+.hb-stem-r { transform-origin: 50% 100%; animation-name: hb-growY; animation-delay: .6s; }
+.hb-bowl { transform-origin: 0% 100%; animation-name: hb-pop; animation-delay: .95s; animation-duration: .55s; animation-timing-function: cubic-bezier(.34,1.45,.64,1); }
+.hb-house { animation-name: hb-rise; animation-delay: 1.35s; animation-duration: .6s; }
+.hb-chimney { animation-name: hb-chim; animation-delay: 1.85s; animation-duration: .3s; }
+.hb-door { transform-origin: 50% 100%; animation-name: hb-growY; animation-delay: 1.95s; animation-duration: .3s; }
+@keyframes hb-growY { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@keyframes hb-growX { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes hb-pop { from { transform: scale(0); } to { transform: scale(1); } }
+@keyframes hb-rise { from { transform: translateY(260px); } to { transform: translateY(0); } }
+@keyframes hb-chim { from { transform: translateY(60px); } to { transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) { .hb-p { animation: none; } }
 .side-section h4 {
   margin: 0; padding: 2px 8px; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted);
   display: flex; align-items: center; justify-content: space-between;
