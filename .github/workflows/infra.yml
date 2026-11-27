@@ -1,0 +1,37 @@
+name: Infrastructuur
+
+# Maakt of werkt de Azure-resources bij volgens infra/main.bicep. Alleen met de hand te starten.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  bicep:
+    name: Bicep uitrollen
+    runs-on: ubuntu-latest
+    environment: productie
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: az deployment group create
+        run: |
+          az deployment group create \
+            --resource-group "${{ vars.AZURE_RESOURCE_GROUP }}" \
+            --template-file infra/main.bicep \
+            --parameters \
+              appUrl="${{ vars.APP_URL }}" \
+              entraTenantId="${{ secrets.AZURE_TENANT_ID }}" \
+              entraClientId="${{ vars.ENTRA_APP_CLIENT_ID }}" \
+              entraClientSecret="${{ secrets.ENTRA_APP_CLIENT_SECRET }}" \
+              adminGroupId="${{ vars.ADMIN_GROUP_ID }}" \
+              postgresAdminPassword="${{ secrets.POSTGRES_ADMIN_PASSWORD }}" \
+              authSecret="${{ secrets.AUTH_SECRET }}" \
+            --query properties.outputs
