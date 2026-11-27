@@ -11,6 +11,32 @@ Draait op Azure en je logt in met je EXIT-account (Microsoft Entra ID).
 
 Eigenaar: Ricardo. Azure en uitrol: Sven.
 
+## Overdracht naar een eigen repository
+
+De code staat compleet in deze repository, met de volledige geschiedenis. Er staan geen geheimen in: wachtwoorden,
+tokens en sleutels komen alleen in de GitHub-omgeving `productie` en in Azure (zie `docs/azure-setup.md`).
+
+Overzetten naar een nieuwe (lege) repository, bijvoorbeeld in de GitHub-organisatie van EXIT:
+
+```bash
+git clone --branch claude/zen-planck-lipd70 https://github.com/Ricoflexx/EXITnotion.git exitnotion
+cd exitnotion
+git remote rename origin oud
+git remote add origin https://github.com/<organisatie>/<repository>.git
+git push -u origin HEAD:main
+```
+
+Daarna in de nieuwe repository:
+
+1. **Settings → Collaborators/Teams:** Ricardo (en wie verder meebouwt) toevoegen met schrijfrechten.
+2. **Settings → Branches:** branch protection op `main` (pull request verplicht).
+3. **Settings → Environments:** omgeving `productie` aanmaken, met de secrets en variables uit `docs/azure-setup.md`.
+4. De workflow **Controle** draait meteen bij elke push. **Uitrollen** wordt overgeslagen tot `AZURE_WEBAPP_NAME`
+   is ingesteld; **Infrastructuur** start je met de hand.
+
+`docs/beoordeling-eisen.html` is het gearchiveerde onderzoek en de beoordeling van de eisen. Het stemmen werkte alleen
+op de oorspronkelijke gedeelde pagina; in de repository is het een naslagdocument.
+
 ## Stand van zaken
 
 | Blok | Inhoud | Status |
@@ -26,8 +52,8 @@ Nodig: [Node.js 22](https://nodejs.org) (LTS), Git, en [Docker Desktop](https://
 (of een eigen PostgreSQL 16). Werkt op Windows, Mac en Linux.
 
 ```bash
-git clone -b claude/zen-planck-lipd70 https://github.com/Ricoflexx/EXITnotion.git
-cd EXITnotion
+git clone <url-van-de-repository> exitnotion
+cd exitnotion
 npm install
 docker compose up -d db
 ```

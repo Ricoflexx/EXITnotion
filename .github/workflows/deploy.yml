@@ -19,6 +19,9 @@ concurrency:
 jobs:
   deploy:
     name: Bouwen en uitrollen
+    # Pas uitrollen als Azure is ingericht (variable AZURE_WEBAPP_NAME staat in de omgeving "productie").
+    # Tot die tijd wordt deze stap netjes overgeslagen in plaats van te falen.
+    if: ${{ vars.AZURE_WEBAPP_NAME != '' }}
     runs-on: ubuntu-latest
     environment:
       name: productie

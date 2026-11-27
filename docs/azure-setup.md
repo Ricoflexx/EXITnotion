@@ -42,7 +42,8 @@ Noteer de **Object ID** (`ADMIN_GROUP_ID`). Leden zien in de app alle pagina's (
 
 1. Maak een tweede app-registratie **EXITnotion-GitHub** (dit is de "deployer", niet de login-app).
 2. **Certificates & secrets → Federated credentials → Add** → *GitHub Actions deploying Azure resources*:
-   - Organization: `Ricoflexx`, Repository: `EXITnotion`, Entity: **Environment**, naam: `productie`
+   - Organization en Repository: de GitHub-organisatie en repository waar de code staat (bijvoorbeeld die van EXIT),
+     Entity: **Environment**, naam: `productie`
 3. Geef deze app de rol **Contributor** op de resourcegroep `rg-exitnotion`, plus
    **Role Based Access Control Administrator** (alleen nodig omdat Bicep de app toegang geeft tot de opslag).
 
